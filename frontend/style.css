@@ -1319,3 +1319,108 @@ body {
 .auth-footer a:hover {
     text-decoration: underline;
 }
+
+/* Interactive Profile Dropdown & Project Delete Button Styles */
+
+.profile-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 220px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    padding: 16px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+    transform-origin: top right;
+    animation: dropdownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownFade {
+    from { opacity: 0; transform: scale(0.95) translateY(-5px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.profile-dropdown.active {
+    display: flex;
+}
+
+.profile-dropdown-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 6px;
+}
+
+.profile-dropdown-username {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.profile-dropdown-role {
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.profile-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.profile-dropdown-item:hover {
+    background: var(--bg-primary);
+    color: var(--accent-color);
+}
+
+.profile-dropdown-item svg {
+    flex-shrink: 0;
+    stroke: currentColor;
+}
+
+/* Delete Button on Agent Dashboard Cards */
+.delete-project-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 2px 6px;
+    line-height: 1;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-project-btn:hover {
+    color: var(--error-color) !important;
+    background-color: var(--error-light);
+    transform: scale(1.15);
+}
+

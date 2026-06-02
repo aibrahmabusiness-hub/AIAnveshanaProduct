@@ -2,15 +2,49 @@ const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
 
 if (username) {
-    document.getElementById('userDisplay').textContent = username;
+    const userDisplay = document.getElementById('userDisplay');
+    if (userDisplay) userDisplay.textContent = username;
+    const dropdownUsername = document.getElementById('dropdownUsername');
+    if (dropdownUsername) dropdownUsername.textContent = username;
     document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
 }
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    window.location.href = '/login';
-});
+// Profile dropdown toggle
+const userAvatar = document.getElementById('userAvatar');
+const profileDropdown = document.getElementById('profileDropdown');
+
+if (userAvatar && profileDropdown) {
+    userAvatar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!profileDropdown.contains(e.target) && e.target !== userAvatar) {
+            profileDropdown.classList.remove('active');
+        }
+    });
+}
+
+// Dropdown Logout
+const dropdownLogoutBtn = document.getElementById('dropdownLogoutBtn');
+if (dropdownLogoutBtn) {
+    dropdownLogoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.href = '/login';
+    });
+}
+
+// Legacy logout button compatibility
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.href = '/login';
+    });
+}
 
 // Helper for authorized fetches
 async function authFetch(url, options = {}) {
@@ -70,13 +104,37 @@ async function loadAgents() {
             card.classList.add('project-card', 'agent-card');
             const toolCount = (agent.connected_tools || []).length;
             card.innerHTML = `
-                <div class="agent-title">${agent.name}</div>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; width:100%;">
+                    <div class="agent-title" style="flex:1;">${agent.name}</div>
+                    <button class="delete-project-btn" data-agent-id="${agent.id}">✕</button>
+                </div>
                 <div class="agent-desc">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
                     ${agent.description}
                 </div>
                 <div style="font-size:0.7rem; color:var(--primary-color); margin-top:4px;">${toolCount} tool${toolCount !== 1 ? 's' : ''} connected</div>
             `;
+            
+            // Delete button binding
+            card.querySelector('.delete-project-btn').addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (confirm(`Are you sure you want to delete project "${agent.name}"? This will delete all its chat history, knowledge base files, and workflows permanently.`)) {
+                    try {
+                        const deleteRes = await authFetch(`/api/agents/${agent.id}`, {
+                            method: 'DELETE'
+                        });
+                        if (deleteRes.ok) {
+                            loadAgents();
+                        } else {
+                            const err = await deleteRes.json();
+                            alert(`Failed to delete project: ${err.detail || 'Unknown error'}`);
+                        }
+                    } catch (err) {
+                        console.error("Error deleting agent:", err);
+                    }
+                }
+            });
+
             card.addEventListener('click', () => { window.location.href = `/project/${agent.id}`; });
             projectsGrid.appendChild(card);
         });

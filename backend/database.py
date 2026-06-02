@@ -444,6 +444,14 @@ def update_agent_llm(user_id, agent_id, llm_config_id):
     conn.commit()
     conn.close()
 
+def delete_agent(user_id, agent_id):
+    if not verify_agent_ownership(user_id, agent_id):
+        raise PermissionError("User does not own this agent")
+    conn = get_conn()
+    _execute(conn, 'DELETE FROM agents WHERE user_id = ? AND id = ?', (user_id, agent_id))
+    conn.commit()
+    conn.close()
+
 # --- Knowledge Base CRUD ---
 
 def verify_agent_ownership(user_id, agent_id) -> bool:

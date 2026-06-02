@@ -21,9 +21,19 @@
             <span class="logo-text" style="font-weight:700; margin-left:8px; font-size:1.25rem;">Ai <span class="highlight">Anveshana</span></span>
         </div>
         <div class="header-right">
-            <span id="userDisplay" style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-right: 10px;"></span>
-            <button id="logoutBtn" class="btn-cancel" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; margin-right: 10px;">Logout</button>
-            <div class="profile-avatar" id="userAvatar">A</div>
+            <div class="profile-container">
+                <div class="profile-avatar" id="userAvatar" style="cursor:pointer;">A</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-dropdown-header">
+                        <div class="profile-dropdown-username" id="dropdownUsername">admin</div>
+                        <div class="profile-dropdown-role">Platform Admin</div>
+                    </div>
+                    <button class="profile-dropdown-item" id="dropdownLogoutBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Log Out
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
 

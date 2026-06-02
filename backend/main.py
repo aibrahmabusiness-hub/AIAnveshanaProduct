@@ -14,7 +14,7 @@ from database import (
     add_llm_config, get_all_llm_configs, set_default_llm_config, delete_llm_config, update_agent_llm,
     create_workflow, get_workflows, get_workflow, delete_workflow,
     create_chat_thread, get_chat_threads, get_chat_thread, delete_chat_thread,
-    update_agent, add_chat_message
+    update_agent, add_chat_message, delete_agent
 )
 from auth import hash_password, verify_password, create_access_token, get_current_user
 from vector_store import add_to_vector_store, delete_from_vector_store
@@ -204,6 +204,25 @@ async def update_agent_llm_config(agent_id: int, request: AgentLLMRequest, curre
     user_id = current_user["user_id"]
     update_agent_llm(user_id, agent_id, request.llm_config_id)
     return {"status": "updated"}
+
+@app.delete("/api/agents/{agent_id}")
+async def delete_agent_endpoint(agent_id: int, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["user_id"]
+    agent = get_agent(user_id, agent_id)
+    if not agent:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    
+    # 1. Clean up knowledge base docs from vector store
+    kb_docs = get_knowledge(user_id, agent_id)
+    for doc in kb_docs:
+        try:
+            delete_from_vector_store(doc["id"])
+        except Exception as e:
+            logger.error(f"Error deleting doc {doc['id']} from vector store: {e}")
+            
+    # 2. Delete agent from database (cascades)
+    delete_agent(user_id, agent_id)
+    return {"status": "deleted"}
 
 # --- Chat Endpoints (Threaded) ---
 

@@ -25,12 +25,27 @@
             <span style="color:var(--border-color); margin:0 12px; font-size:1.2rem;">/</span>
             <span class="brand-title" id="sidebarTitle" style="font-weight:600; color:var(--text-secondary); font-size:0.95rem;">Loading...</span>
         </div>
-        <div class="header-right" style="gap:12px;">
+        <div class="header-right" style="gap:12px; display:flex; align-items:center;">
             <button id="saveAgentBtn" class="orange-btn" style="padding: 6px 16px; font-size: 0.8rem; border-radius: 6px; display:none;">Save</button>
             <button id="defaultAgentBtn" class="btn-cancel" style="padding: 6px 16px; font-size: 0.8rem; border-radius: 6px; font-weight:600;">Set as Default</button>
-            <a href="/" class="back-link" style="margin-left:10px;">← Dashboard</a>
-            <button id="logoutBtn" class="btn-cancel" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer;">Logout</button>
-            <div class="profile-avatar" id="userAvatar">A</div>
+            <a href="/" class="back-link" style="margin-left:10px; font-weight:600; text-decoration:none; font-size:0.85rem; color:var(--text-secondary);">← Dashboard</a>
+            <div class="profile-container">
+                <div class="profile-avatar" id="userAvatar" style="cursor:pointer;">A</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-dropdown-header">
+                        <div class="profile-dropdown-username" id="dropdownUsername">admin</div>
+                        <div class="profile-dropdown-role">Platform Admin</div>
+                    </div>
+                    <a href="/" class="profile-dropdown-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        Dashboard
+                    </a>
+                    <button class="profile-dropdown-item" id="dropdownLogoutBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Log Out
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
 

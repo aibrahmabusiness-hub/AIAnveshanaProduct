@@ -4,13 +4,46 @@ const username = localStorage.getItem('username');
 
 if (username) {
     document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+    const dropdownUsername = document.getElementById('dropdownUsername');
+    if (dropdownUsername) dropdownUsername.textContent = username;
 }
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    window.location.href = '/login';
-});
+// Profile dropdown toggle
+const userAvatar = document.getElementById('userAvatar');
+const profileDropdown = document.getElementById('profileDropdown');
+
+if (userAvatar && profileDropdown) {
+    userAvatar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!profileDropdown.contains(e.target) && e.target !== userAvatar) {
+            profileDropdown.classList.remove('active');
+        }
+    });
+}
+
+// Dropdown Logout
+const dropdownLogoutBtn = document.getElementById('dropdownLogoutBtn');
+if (dropdownLogoutBtn) {
+    dropdownLogoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.href = '/login';
+    });
+}
+
+// Legacy logout button compatibility
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.href = '/login';
+    });
+}
 
 async function authFetch(url, options = {}) {
     const token = localStorage.getItem('token');
