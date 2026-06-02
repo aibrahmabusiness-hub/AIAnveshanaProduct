@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/config.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ai Anveshana Platform - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script>
+        // Authentication check before loading content
+        if (!localStorage.getItem('token')) {
+            window.location.href = '/login';
+        }
+    </script>
+</head>
+<body>
+    <header class="top-header">
+        <div class="logo">
+            <svg viewBox="0 0 100 100" class="logo-img" style="height: 35px; width: 35px;"><rect x="0" y="35" width="100" height="30" rx="15" class="logo-rect" transform="rotate(45 50 50)" /><circle cx="22" cy="78" r="20" class="logo-circle" /><circle cx="78" cy="22" r="20" class="logo-circle" /></svg>
+            <span class="logo-text" style="font-weight:700; margin-left:8px; font-size:1.25rem;">Ai <span class="highlight">Anveshana</span></span>
+        </div>
+        <div class="header-right">
+            <span id="userDisplay" style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-right: 10px;"></span>
+            <button id="logoutBtn" class="btn-cancel" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; margin-right: 10px;">Logout</button>
+            <div class="profile-avatar" id="userAvatar">A</div>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <div class="dashboard-controls">
+            <h2>Your Projects</h2>
+            <div class="controls-right">
+                <div class="search-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Search Projects" id="searchInput">
+                </div>
+            </div>
+        </div>
+
+        <div class="projects-grid" id="projectsGrid">
+            <div class="project-card create-card" id="createNewBtn">
+                <div style="font-size:2.5rem; color:var(--primary-color); margin-bottom:8px;">+</div>
+                <div style="font-weight:600; color:var(--text-main);">Create New Project</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:4px;">Configure a new custom agent with dynamic tool bindings</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create Project Modal -->
+    <div class="modal-overlay" id="createModal">
+        <div class="modal" style="width:480px;">
+            <div class="modal-header">
+                <h3>Create New Agent Project</h3>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <form id="createProjectForm">
+                <div class="form-group">
+                    <label>Project Name</label>
+                    <input type="text" id="projectName" required placeholder="e.g. IT Issue Resolver">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="projectDesc" required placeholder="e.g. Resolves IT tickets via email">
+                </div>
+                <div class="form-group">
+                    <label>Agent System Prompt</label>
+                    <textarea id="systemPrompt" rows="4" placeholder="You are an IT support agent. Help employees resolve technical issues by checking their emails, scheduling follow-up meetings, and querying the knowledge base..." style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Connect Tools</label>
+                    <div id="toolCheckboxes" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px;">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelModalBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Create Agent</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
