@@ -104,15 +104,17 @@ async function loadAgents() {
             card.classList.add('project-card', 'agent-card');
             const toolCount = (agent.connected_tools || []).length;
             card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; width:100%;">
-                    <div class="agent-title" style="flex:1;">${agent.name}</div>
-                    <button class="delete-project-btn" data-agent-id="${agent.id}">✕</button>
+                <div class="card-header-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <div class="agent-title">${agent.name}</div>
                 </div>
                 <div class="agent-desc">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-                    ${agent.description}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                    <span>${agent.description}</span>
                 </div>
-                <div style="font-size:0.7rem; color:var(--primary-color); margin-top:4px;">${toolCount} tool${toolCount !== 1 ? 's' : ''} connected</div>
+                <div class="card-footer-row" style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-top:auto;">
+                    <div class="tools-badge-container" style="font-size:0.75rem; color:var(--primary-color); font-weight:600;">${toolCount} tool${toolCount !== 1 ? 's' : ''} connected</div>
+                    <button class="delete-project-btn" data-agent-id="${agent.id}">✕</button>
+                </div>
             `;
             
             // Delete button binding
@@ -172,6 +174,35 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
         card.style.display = title.includes(query) ? '' : 'none';
     });
 });
+
+// View toggle functionality
+const viewToggleBtn = document.getElementById('viewToggleBtn');
+const gridIcon = document.getElementById('gridIcon');
+const listIcon = document.getElementById('listIcon');
+
+let currentViewMode = localStorage.getItem('dashboardViewMode') || 'grid';
+
+function applyViewMode(mode) {
+    if (mode === 'list') {
+        projectsGrid.classList.add('list-view');
+        if (gridIcon) gridIcon.style.display = 'none';
+        if (listIcon) listIcon.style.display = 'block';
+    } else {
+        projectsGrid.classList.remove('list-view');
+        if (gridIcon) gridIcon.style.display = 'block';
+        if (listIcon) listIcon.style.display = 'none';
+    }
+    localStorage.setItem('dashboardViewMode', mode);
+}
+
+applyViewMode(currentViewMode);
+
+if (viewToggleBtn) {
+    viewToggleBtn.addEventListener('click', () => {
+        currentViewMode = currentViewMode === 'grid' ? 'list' : 'grid';
+        applyViewMode(currentViewMode);
+    });
+}
 
 // Init
 loadTools();
