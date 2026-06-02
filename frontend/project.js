@@ -1446,6 +1446,8 @@ function initAgentConfigForm() {
 
     // 2. Populate form fields
     document.getElementById('agentNameInput').value = agentData.name || '';
+    const agentDescInput = document.getElementById('agentDescInput');
+    if (agentDescInput) agentDescInput.value = agentData.description || '';
     document.getElementById('personalityPromptInput').value = agentData.system_prompt || '';
     document.getElementById('systemPromptConfigInput').value = agentData.system_prompt || '';
     document.getElementById('userPromptConfigInput').value = agentData.user_prompt || '';
@@ -1496,7 +1498,8 @@ function initAgentConfigForm() {
     document.getElementById('saveAgentBtn').replaceWith(document.getElementById('saveAgentBtn').cloneNode(true));
     document.getElementById('saveAgentBtn').addEventListener('click', async () => {
         const name = document.getElementById('agentNameInput').value;
-        const description = agentData.description || 'Enterprise Agent';
+        const agentDescInput = document.getElementById('agentDescInput');
+        const description = agentDescInput ? agentDescInput.value : (agentData.description || 'Enterprise Agent');
         const system_prompt = document.getElementById('systemPromptConfigInput').value;
         const user_prompt = document.getElementById('userPromptConfigInput').value;
         const creativity = parseFloat(document.getElementById('creativitySlider').value);
@@ -1524,6 +1527,7 @@ function initAgentConfigForm() {
             
             // Sync local agentData state
             agentData.name = name;
+            agentData.description = description;
             agentData.system_prompt = system_prompt;
             agentData.user_prompt = user_prompt;
             agentData.creativity = creativity;
@@ -1676,3 +1680,49 @@ init = async function() {
 
 // Boot
 init();
+
+// Split pane resizer logic
+const resizeHandle = document.getElementById('resizeHandle');
+const wsMain = document.querySelector('.ws-main');
+const viewChat = document.getElementById('view-chat');
+
+if (resizeHandle && wsMain && viewChat) {
+    let isDragging = false;
+
+    resizeHandle.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        resizeHandle.classList.add('dragging');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+
+        const containerRect = wsMain.getBoundingClientRect();
+        const relativeX = e.clientX - containerRect.left;
+
+        const minWidth = 280;
+        const maxWidth = containerRect.width - 280;
+        let newChatWidth = Math.max(minWidth, Math.min(relativeX, maxWidth));
+        
+        const chatPercentage = (newChatWidth / containerRect.width) * 100;
+        const configPercentage = 100 - chatPercentage;
+
+        viewChat.style.width = `${chatPercentage}%`;
+        
+        document.querySelectorAll('.ws-view:not(#view-chat)').forEach(view => {
+            view.style.width = `${configPercentage}%`;
+        });
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            resizeHandle.classList.remove('dragging');
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        }
+    });
+}

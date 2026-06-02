@@ -1504,4 +1504,32 @@ body {
     display: none !important; /* Hide long grid description in list view */
 }
 
+/* Split-Pane Resizer Handle */
+
+.resize-handle {
+    width: 6px;
+    background: var(--border-color);
+    cursor: col-resize;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+    z-index: 10;
+}
+
+.resize-handle:hover,
+.resize-handle.dragging {
+    background: var(--accent-color);
+}
+
+/* Hide resizer handle when only chat is active */
+.ws-main:not(:has(.ws-view:not(#view-chat).active)) #resizeHandle {
+    display: none !important;
+}
+
+/* Force 100% width when only chat is active */
+.ws-main #view-chat.active {
+    width: 100% !important;
+    border-right: none;
+}
+
 

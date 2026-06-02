@@ -115,6 +115,9 @@
                 </div>
             </div>
 
+            <!-- Resizer Handle -->
+            <div class="resize-handle" id="resizeHandle"></div>
+
             <!-- Agents View -->
             <div class="ws-view" id="view-agents">
                 <div class="agents-workspace">
@@ -132,7 +135,11 @@
                                 <div style="display:flex; flex-direction:column; gap:16px;">
                                     <div class="form-group">
                                         <label style="font-weight:600;">Agent Name</label>
-                                        <input type="text" id="agentNameInput" style="padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit;">
+                                        <input type="text" id="agentNameInput" style="padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit; width:100%;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="font-weight:600;">Agent Description</label>
+                                        <input type="text" id="agentDescInput" style="padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit; width:100%;">
                                     </div>
                                     <div class="form-group">
                                         <label style="font-weight:600;">Model</label>
