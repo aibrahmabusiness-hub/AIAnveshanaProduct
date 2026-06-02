@@ -1435,7 +1435,7 @@ body {
 .projects-grid.list-view {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px !important;
     grid-template-columns: none !important;
 }
 
@@ -1443,13 +1443,15 @@ body {
     flex-direction: row !important;
     align-items: center !important;
     justify-content: space-between !important;
+    height: auto !important;
     min-height: auto !important;
-    padding: 16px 24px !important;
-    gap: 24px !important;
+    padding: 12px 20px !important;
+    gap: 16px !important;
+    border-radius: 12px !important;
 }
 
 .projects-grid.list-view .project-card .card-header-row {
-    width: 200px !important;
+    width: 180px !important;
     margin-bottom: 0 !important;
     flex-shrink: 0 !important;
 }
@@ -1471,7 +1473,7 @@ body {
 .projects-grid.list-view .project-card .card-footer-row {
     width: auto !important;
     margin-top: 0 !important;
-    gap: 24px !important;
+    gap: 20px !important;
     flex-shrink: 0 !important;
 }
 
@@ -1480,19 +1482,22 @@ body {
     justify-content: center !important;
     align-items: center !important;
     gap: 16px !important;
-    padding: 16px !important;
+    padding: 12px 20px !important;
     border-style: dashed !important;
     background: rgba(16, 185, 129, 0.02) !important;
+    height: auto !important;
     min-height: auto !important;
+    border-radius: 12px !important;
 }
 
 .projects-grid.list-view .create-card div:first-child {
-    font-size: 1.75rem !important;
+    font-size: 1.5rem !important;
     margin-bottom: 0 !important;
 }
 
 .projects-grid.list-view .create-card div:nth-child(2) {
     font-weight: 700 !important;
+    font-size: 0.9rem !important;
 }
 
 .projects-grid.list-view .create-card div:last-child {
