@@ -206,7 +206,7 @@ body {
 .dashboard-controls h2 { 
     font-family: 'Poppins', sans-serif;
     font-size: 1.75rem; 
-    font-weight: 800; 
+    font-weight: 600; 
     letter-spacing: -0.5px;
     color: var(--text-primary);
 }
@@ -284,7 +284,7 @@ body {
 }
 .agent-title { 
     font-family: 'Poppins', sans-serif;
-    font-weight: 700; 
+    font-weight: 600; 
     font-size: 1.2rem; 
     margin-bottom: auto; 
     color: var(--text-primary);
@@ -400,6 +400,12 @@ body {
     align-items: center;
     flex-shrink: 0; 
     gap: 12px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ws-sidebar.expanded {
+    width: 220px;
+    align-items: stretch;
+    padding: 24px 16px;
 }
 .ws-sidebar .brand-title { 
     display: none; 
@@ -415,7 +421,20 @@ body {
     cursor: pointer; 
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
     position: relative;
-    font-size: 0 !important;
+    font-size: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.ws-sidebar.expanded .ws-nav-item {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    gap: 12px;
+}
+.ws-nav-item svg {
+    flex-shrink: 0;
 }
 .ws-nav-item:hover { 
     background: var(--bg-tertiary); 
@@ -526,37 +545,16 @@ body {
 .ws-view.active { 
     display: flex; 
     flex-direction: column; 
-}
-
-/* --- Split-Pane Layout Engine --- */
-/* If any configuration tab is active, show the Chat View on the left side and configuration view on the right */
-.ws-main:has(.ws-view:not(#view-chat).active) #view-chat {
-    display: flex !important;
-    width: 42%;
-    border-right: 1px solid var(--border-color);
-    flex-shrink: 0;
-    background: var(--bg-primary);
-}
-.ws-main:has(.ws-view:not(#view-chat).active) #view-chat .ws-greeting {
-    font-size: 1.15rem;
-    margin-bottom: 20px;
-}
-.ws-main:has(.ws-view:not(#view-chat).active) #view-chat .ws-chat-container {
-    padding: 24px 16px 16px;
-}
-
-/* The active configuration view occupies the right pane */
-.ws-main .ws-view:not(#view-chat).active {
-    display: flex !important;
-    width: 58%;
-    flex-direction: column;
-    background: var(--bg-secondary);
-}
-
-/* If Chat is the primary active view, make it full-width */
-.ws-main #view-chat.active {
-    width: 100%;
     border-right: none;
+    flex: 1;
+    width: 100%;
+}
+
+/* Give workflows full width */
+.ws-main #view-workflows.active {
+    display: flex !important;
+    width: 100% !important;
+    flex-direction: column;
 }
 
 /* Chat container styling */
@@ -1532,4 +1530,716 @@ body {
     border-right: none;
 }
 
+/* Workflow Canvas Modal & Editor */
+.workflow-canvas-modal {
+    width: 96vw !important;
+    height: 92vh !important;
+    max-height: 94vh !important;
+    max-width: 1800px !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: rgba(250, 251, 252, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+}
 
+.workflow-canvas-body {
+    display: flex;
+    flex: 1;
+    height: calc(100% - 80px);
+    overflow: hidden;
+    background: transparent;
+}
+
+/* Toolbox Styles */
+.canvas-toolbox {
+    width: 280px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-right: 1px solid rgba(16, 185, 129, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    box-shadow: inset -5px 0 15px rgba(0,0,0,0.02);
+}
+
+.canvas-toolbox h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.toolbox-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toolbox-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    border-radius: 12px;
+    cursor: grab;
+    user-select: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+}
+
+.toolbox-item:hover {
+    border-color: var(--accent-color);
+    background: var(--bg-tertiary);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.1);
+}
+
+.toolbox-item:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+.toolbox-item:hover .toolbox-item-name {
+    color: var(--accent-color);
+}
+
+.toolbox-item-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    font-size: 1.1rem;
+}
+
+.toolbox-item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.toolbox-item-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.toolbox-item-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Canvas Container */
+.canvas-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* Floating Controls */
+.canvas-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.canvas-control-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s;
+}
+
+.canvas-control-btn:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+/* Properties Inspector Panel */
+.canvas-inspector {
+    width: 340px;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-color);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.inspector-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+    gap: 12px;
+}
+
+.inspector-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+}
+
+.inspector-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.inspector-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.inspector-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Drawflow Theme Overrides */
+.drawflow {
+    background-color: #fafbfc;
+    background-image: radial-gradient(var(--border-color) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+}
+
+.drawflow .drawflow-node {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(16, 185, 129, 0.2) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+    padding: 16px 20px !important;
+    width: 240px !important;
+    min-height: auto !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.drawflow .drawflow-node:hover {
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1) !important;
+    transform: translateY(-2px);
+    border-color: rgba(16, 185, 129, 0.5) !important;
+}
+
+.drawflow .drawflow-node.selected {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15) !important;
+}
+
+.drawflow .drawflow-node .title-box {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.drawflow .drawflow-node .title-box i {
+    font-size: 1.4rem;
+    margin-right: 10px;
+    background: var(--accent-light);
+    padding: 6px;
+    border-radius: 8px;
+}
+
+.drawflow .drawflow-node .title-box span.title-text {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.drawflow .drawflow-node .title-box span.title-sub {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.drawflow .connection .main-path {
+    stroke: var(--accent-color) !important;
+    stroke-width: 3px !important;
+}
+
+.drawflow .connection .point {
+    stroke: var(--orange-primary) !important;
+    stroke-width: 2px !important;
+    fill: #ffffff !important;
+    transition: all 0.2s ease;
+}
+
+.drawflow .connection .point:hover {
+    fill: var(--orange-primary) !important;
+    transform: scale(1.2);
+}
+
+.drawflow .drawflow-node .input,
+.drawflow .drawflow-node .output {
+    width: 12px !important;
+    height: 12px !important;
+    background: var(--bg-secondary) !important;
+    border: 2px solid var(--accent-color) !important;
+    border-radius: 50% !important;
+    transition: background 0.2s, transform 0.2s;
+    cursor: crosshair;
+}
+
+.drawflow .drawflow-node .input:hover,
+.drawflow .drawflow-node .output:hover {
+    background: var(--accent-color) !important;
+    transform: scale(1.2);
+}
+
+.drawflow .drawflow-node .input {
+    left: -7px !important;
+    top: 50% !important;
+    transform: translateY(-50%);
+}
+
+.drawflow .drawflow-node .output {
+    right: -7px !important;
+    top: 50% !important;
+    transform: translateY(-50%);
+}
+
+.drawflow .connection .main-path {
+    stroke: var(--accent-color) !important;
+    stroke-width: 3px !important;
+    transition: stroke-width 0.2s, stroke 0.2s;
+}
+
+.drawflow .connection .main-path:hover,
+.drawflow .connection.selected .main-path {
+    stroke: var(--orange-hover) !important;
+    stroke-width: 4px !important;
+}
+
+.drawflow-node-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.drawflow-node-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.drawflow-node-details {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.drawflow-node-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.drawflow-node-type {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 1px;
+}
+
+
+
+
+ / *   D a t a   P i c k e r   S t y l e s   * / 
+ . d a t a - p i c k e r - b t n   { 
+         p o s i t i o n :   a b s o l u t e ; 
+         r i g h t :   8 p x ; 
+         t o p :   5 0 % ; 
+         t r a n s f o r m :   t r a n s l a t e Y ( - 5 0 % ) ; 
+         b a c k g r o u n d :   v a r ( - - b g - t e r t i a r y ) ; 
+         c o l o r :   v a r ( - - a c c e n t - c o l o r ) ; 
+         b o r d e r :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+         b o r d e r - r a d i u s :   4 p x ; 
+         c u r s o r :   p o i n t e r ; 
+         f o n t - s i z e :   0 . 8 r e m ; 
+         p a d d i n g :   2 p x   6 p x ; 
+         f o n t - w e i g h t :   6 0 0 ; 
+         z - i n d e x :   5 ; 
+         t r a n s i t i o n :   a l l   0 . 2 s ; 
+ } 
+ . d a t a - p i c k e r - b t n : h o v e r   { 
+         b a c k g r o u n d :   v a r ( - - a c c e n t - c o l o r ) ; 
+         c o l o r :   w h i t e ; 
+ } 
+ t e x t a r e a   +   . d a t a - p i c k e r - b t n   { 
+         t o p :   1 2 p x ; 
+         t r a n s f o r m :   n o n e ; 
+ } 
+ . d a t a - p i c k e r - d r o p d o w n   { 
+         p o s i t i o n :   a b s o l u t e ; 
+         b a c k g r o u n d :   w h i t e ; 
+         b o r d e r :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+         b o r d e r - r a d i u s :   8 p x ; 
+         b o x - s h a d o w :   0   4 p x   1 6 p x   r g b a ( 0 , 0 , 0 , 0 . 1 ) ; 
+         z - i n d e x :   1 0 0 0 ; 
+         m a x - h e i g h t :   3 0 0 p x ; 
+         o v e r f l o w - y :   a u t o ; 
+         w i d t h :   2 5 0 p x ; 
+         f o n t - s i z e :   0 . 8 5 r e m ; 
+         d i s p l a y :   n o n e ; 
+ } 
+ . d a t a - p i c k e r - d r o p d o w n . a c t i v e   { 
+         d i s p l a y :   b l o c k ; 
+ } 
+ . d a t a - p i c k e r - g r o u p   { 
+         p a d d i n g :   8 p x   1 2 p x ; 
+         f o n t - w e i g h t :   7 0 0 ; 
+         b a c k g r o u n d :   v a r ( - - b g - p r i m a r y ) ; 
+         c o l o r :   v a r ( - - t e x t - m u t e d ) ; 
+         f o n t - s i z e :   0 . 7 5 r e m ; 
+         t e x t - t r a n s f o r m :   u p p e r c a s e ; 
+         b o r d e r - b o t t o m :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+         b o r d e r - t o p :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+ } 
+ . d a t a - p i c k e r - g r o u p : f i r s t - c h i l d   { 
+         b o r d e r - t o p :   n o n e ; 
+ } 
+ . d a t a - p i c k e r - i t e m   { 
+         p a d d i n g :   8 p x   1 2 p x ; 
+         c u r s o r :   p o i n t e r ; 
+         c o l o r :   v a r ( - - t e x t - p r i m a r y ) ; 
+         b o r d e r - b o t t o m :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+         f o n t - f a m i l y :   m o n o s p a c e ; 
+         f o n t - s i z e :   0 . 8 r e m ; 
+ } 
+ . d a t a - p i c k e r - i t e m : l a s t - c h i l d   { 
+         b o r d e r - b o t t o m :   n o n e ; 
+ } 
+ . d a t a - p i c k e r - i t e m : h o v e r   { 
+         b a c k g r o u n d :   v a r ( - - b g - t e r t i a r y ) ; 
+         c o l o r :   v a r ( - - a c c e n t - c o l o r ) ; 
+ }  
+ 
+
+ / *   D a t a   P i c k e r   S t y l e s   * / 
+ . d a t a - p i c k e r - b t n   { 
+         p o s i t i o n :   a b s o l u t e ; 
+         r i g h t :   8 p x ; 
+         t o p :   5 0 % ; 
+         t r a n s f o r m :   t r a n s l a t e Y ( - 5 0 % ) ; 
+         b a c k g r o u n d :   v a r ( - - b g - t e r t i a r y ) ; 
+         c o l o r :   v a r ( - - a c c e n t - c o l o r ) ; 
+         b o r d e r :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+         b o r d e r - r a d i u s :   4 p x ; 
+         c u r s o r :   p o i n t e r ; 
+         f o n t - s i z e :   0 . 8 r e m ; 
+         p a d d i n g :   2 p x   6 p x ; 
+         f o n t - w e i g h t :   6 0 0 ; 
+         z - i n d e x :   5 ; 
+         t r a n s i t i o n :   a l l   0 . 2 s ; 
+ } 
+ . d a t a - p i c k e r - b t n : h o v e r   { 
+         b a c k g r o u n d :   v a r ( - - a c c e n t - c o l o r ) ; 
+         c o l o r :   w h i t e ; 
+ } 
+ t e x t a r e a   +   . d a t a - p i c k e r - b t n   { 
+         t o p :   1 2 p x ; 
+         t r a n s f o r m :   n o n e ; 
+ } 
+ . d a t a - p i c k e r - d r o p d o w n   { 
+         p o s i t i o n :   a b s o l u t e ; 
+         b a c k g r o u n d :   w h i t e ; 
+         b o r d e r :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+         b o r d e r - r a d i u s :   8 p x ; 
+         b o x - s h a d o w :   0   4 p x   1 6 p x   r g b a ( 0 , 0 , 0 , 0 . 1 ) ; 
+         z - i n d e x :   1 0 0 0 ; 
+         m a x - h e i g h t :   3 0 0 p x ; 
+         o v e r f l o w - y :   a u t o ; 
+         w i d t h :   2 5 0 p x ; 
+         f o n t - s i z e :   0 . 8 5 r e m ; 
+         d i s p l a y :   n o n e ; 
+ } 
+ . d a t a - p i c k e r - d r o p d o w n . a c t i v e   { 
+         d i s p l a y :   b l o c k ; 
+ } 
+ . d a t a - p i c k e r - g r o u p   { 
+         p a d d i n g :   8 p x   1 2 p x ; 
+         f o n t - w e i g h t :   7 0 0 ; 
+         b a c k g r o u n d :   v a r ( - - b g - p r i m a r y ) ; 
+         c o l o r :   v a r ( - - t e x t - m u t e d ) ; 
+         f o n t - s i z e :   0 . 7 5 r e m ; 
+         t e x t - t r a n s f o r m :   u p p e r c a s e ; 
+         b o r d e r - b o t t o m :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+         b o r d e r - t o p :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+ } 
+ . d a t a - p i c k e r - g r o u p : f i r s t - c h i l d   { 
+         b o r d e r - t o p :   n o n e ; 
+ } 
+ . d a t a - p i c k e r - i t e m   { 
+         p a d d i n g :   8 p x   1 2 p x ; 
+         c u r s o r :   p o i n t e r ; 
+         c o l o r :   v a r ( - - t e x t - p r i m a r y ) ; 
+         b o r d e r - b o t t o m :   1 p x   s o l i d   v a r ( - - b o r d e r - c o l o r ) ; 
+         f o n t - f a m i l y :   m o n o s p a c e ; 
+         f o n t - s i z e :   0 . 8 r e m ; 
+ } 
+ . d a t a - p i c k e r - i t e m : l a s t - c h i l d   { 
+         b o r d e r - b o t t o m :   n o n e ; 
+ } 
+ . d a t a - p i c k e r - i t e m : h o v e r   { 
+         b a c k g r o u n d :   v a r ( - - b g - t e r t i a r y ) ; 
+         c o l o r :   v a r ( - - a c c e n t - c o l o r ) ; 
+ }  
+ 
+
+.editor-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    z-index: 10;
+}
+
+/* ====== FLOWS VIEW ====== */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+#view-workflows {
+    overflow-y: auto;
+}
+
+#view-workflows table tr:last-child td {
+    border-bottom: none;
+}
+
+#view-workflows input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Autocomplete Dropdown */
+#autocompleteDropdown {
+    font-family: inherit;
+}
+.autocomplete-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    transition: background 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.autocomplete-item:hover, .autocomplete-item.selected {
+    background: #f1f5f9;
+}
+.autocomplete-item-step {
+    font-weight: 600;
+    color: #475569;
+}
+.autocomplete-item-var {
+    color: var(--primary-color);
+    font-family: monospace;
+    font-size: 0.8rem;
+}
+
+/* Agents Hub Styles */
+#agents-list-screen {
+    background-color: #f3f4f6;
+    min-height: 100%;
+    padding: 32px 40px !important;
+}
+.agents-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+}
+.agent-hub-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    min-height: 150px;
+    position: relative;
+    cursor: pointer;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.agent-hub-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.agent-hub-card.active-card {
+    border-color: var(--orange-primary);
+}
+.agent-hub-card.split-card {
+    padding: 0;
+}
+.agent-hub-card .split-top {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+.agent-hub-card .split-bottom {
+    padding: 16px;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    flex: 1;
+}
+.agent-hub-card .agent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+.agent-hub-card .agent-title {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 1rem;
+}
+.agent-hub-card .agent-more {
+    color: var(--text-main);
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    line-height: 1;
+}
+.agent-hub-card .agent-desc {
+    font-size: 0.8rem;
+    color: var(--text-main);
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+    flex: 1;
+}
+.agent-hub-card .agent-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+}
+.agent-hub-card .agent-tools {
+    display: flex;
+    gap: 6px;
+}
+.agent-hub-card .tool-box {
+    width: 24px;
+    height: 24px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+}
+.agent-hub-card .tool-box.count {
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+.agent-hub-card .nav-arrow {
+    font-size: 1.2rem;
+    color: #000;
+    line-height: 1;
+    font-weight: 300;
+}
+.agent-hub-card .badge-default {
+    background: #fff7ed;
+    color: var(--orange-primary);
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* Templates Tabs */
+.templates-tabs-container {
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: inline-flex;
+    gap: 4px;
+    overflow-x: auto;
+    max-width: 100%;
+}
+.template-tab {
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--orange-primary);
+    cursor: pointer;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+.template-tab.active {
+    background: var(--orange-primary);
+    color: white;
+}

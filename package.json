@@ -1,0 +1,19 @@
+{
+  "name": "agentic-ai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@activepieces/pieces-common": "^0.12.3",
+    "@activepieces/pieces-framework": "^0.29.0",
+    "@activepieces/shared": "^0.82.2",
+    "puppeteer": "^25.1.0"
+  }
+}

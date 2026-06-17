@@ -12,3 +12,6 @@ chromadb==0.4.22
 python-multipart==0.0.9
 requests==2.31.0
 mistralai>=0.0.7
+pinecone-client
+apscheduler>=3.10.0
+httpx>=0.24.0

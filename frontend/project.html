@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ai Anveshana Platform - Workspace</title>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style.css?v=2.2">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.js"></script>
     <script>
         // Authentication check
         if (!localStorage.getItem('token')) {
@@ -26,15 +28,14 @@
             <span class="brand-title" id="sidebarTitle" style="font-weight:600; color:var(--text-secondary); font-size:0.95rem;">Loading...</span>
         </div>
         <div class="header-right" style="gap:12px; display:flex; align-items:center;">
-            <button id="saveAgentBtn" class="orange-btn" style="padding: 6px 16px; font-size: 0.8rem; border-radius: 6px; display:none;">Save</button>
-            <button id="defaultAgentBtn" class="btn-cancel" style="padding: 6px 16px; font-size: 0.8rem; border-radius: 6px; font-weight:600;">Set as Default</button>
+            <button id="saveAgentBtn" class="orange-btn" style="padding: 6px 16px; font-size: 0.8rem; border-radius: 6px; display:none;" onclick="if(window.saveAgentConfig) window.saveAgentConfig(); else alert('Error: saveAgentConfig not defined. Hard refresh needed.');">Save</button>
             <a href="/" class="back-link" style="margin-left:10px; font-weight:600; text-decoration:none; font-size:0.85rem; color:var(--text-secondary);">← Dashboard</a>
             <div class="profile-container">
-                <div class="profile-avatar" id="userAvatar" style="cursor:pointer;">A</div>
+                <div class="profile-avatar" id="userAvatar" style="cursor:pointer;">U</div>
                 <div class="profile-dropdown" id="profileDropdown">
                     <div class="profile-dropdown-header">
-                        <div class="profile-dropdown-username" id="dropdownUsername">admin</div>
-                        <div class="profile-dropdown-role">Platform Admin</div>
+                        <div class="profile-dropdown-username" id="dropdownUsername">User</div>
+                        <div class="profile-dropdown-role">User</div>
                     </div>
                     <a href="/" class="profile-dropdown-item">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -53,11 +54,12 @@
         <!-- Left Sidebar -->
         <nav class="ws-sidebar">
 
-            <div class="ws-nav-item active" data-view="chat">
+            
+            <div class="ws-nav-item" data-view="chat">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                 Chat
             </div>
-            <div class="ws-nav-item" data-view="agents">
+            <div class="ws-nav-item active" data-view="agents">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 Agents
             </div>
@@ -69,6 +71,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                 Knowledge Base
             </div>
+                        
             <div class="ws-nav-item" data-view="workflows">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
                 Workflows
@@ -81,10 +84,14 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 Settings
             </div>
+            <div style="flex: 1;"></div>
+            <div class="ws-nav-item" id="sidebarToggleBtn" style="margin-top: auto; color: var(--orange-primary);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+                <span class="toggle-text">Expand</span>
+            </div>
         </nav>
-
         <!-- Middle: Chat History -->
-        <aside class="ws-history" id="historyPanel">
+        <aside class="ws-history" id="historyPanel" style="display: none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                 <div class="ws-history-header" style="margin-bottom:0;">Chat Threads</div>
                 <button class="btn-primary" id="newThreadBtn" style="padding:4px 8px; font-size:0.75rem; border-radius:4px;">+ New</button>
@@ -94,10 +101,13 @@
             </div>
         </aside>
 
+
+        
+
         <!-- Main Content Area -->
         <main class="ws-main">
             <!-- Chat View -->
-            <div class="ws-view active" id="view-chat">
+            <div class="ws-view" id="view-chat">
                 <div class="ws-chat-container" id="chatContainer">
                     <h1 class="ws-greeting" id="greetingText">What can I help you with?</h1>
                     <div id="chatMessages"></div>
@@ -105,7 +115,16 @@
                         <input type="text" id="promptInput" placeholder="Ask Anything..." autofocus>
                         <div class="ws-input-actions">
                             <div class="ws-input-tools">
-                                <div class="tool-pill" id="connectedToolsBadge">No tools</div>
+                                  <div class="custom-agent-dropdown" id="chatAgentDropdown" style="position: relative;">
+                                      <div class="custom-dropdown-trigger" id="chatAgentDropdownTrigger" style="display: flex; align-items: center; gap: 8px; padding: 6px 14px; background: #fff; border: 1px solid rgba(249,115,22,0.3); border-radius: 8px; color: #f97316; font-size: 0.85rem; font-weight: 500; cursor: pointer; user-select: none; transition: background 0.2s;">
+                                          <span id="chatAgentDropdownLabel">AI Simple Agent</span>
+                                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="chatAgentDropdownIcon" style="transition: transform 0.2s;"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                                      </div>
+                                      <div class="custom-dropdown-menu" id="chatAgentDropdownMenu" style="position: absolute; bottom: calc(100% + 8px); left: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); min-width: 240px; display: none; flex-direction: column; z-index: 100; max-height: 300px; overflow-y: auto; padding-bottom: 8px; font-family: inherit;">
+                                          <!-- Inject JS -->
+                                      </div>
+                                  </div>
+                                  <div class="tool-pill" id="connectedToolsBadge" style="display:none;">No tools</div>
                             </div>
                             <button class="send-btn" id="sendBtn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
@@ -114,14 +133,117 @@
                     </div>
                 </div>
             </div>
-
+            
             <!-- Resizer Handle -->
             <div class="resize-handle" id="resizeHandle"></div>
 
+            
+
+            
+
             <!-- Agents View -->
-            <div class="ws-view" id="view-agents">
-                <div class="agents-workspace">
-                    <div class="agents-inner-sidebar">
+            <div class="ws-view active" id="view-agents">
+                <!-- Agents List Screen -->
+                <div id="agents-list-screen" style="padding: 24px;">
+                    <div class="dashboard-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 class="font-sentient" style="font-size: 1.5rem; font-weight: 700; color: #000; margin: 0;">Agents</h2>
+                        <div class="search-box">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" placeholder="Search agents and guidance..." id="agentSearchInput" style="width: 250px;">
+                        </div>
+                    </div>
+
+                    <div class="agents-grid" id="projectAgentsGrid">
+                        <!-- Create from Prompt Card -->
+                        <div class="agent-hub-card split-card" id="createFromPromptBtn" style="cursor:pointer;">
+                            <div class="split-top" style="color: var(--orange-primary);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg>
+                                Create from prompt
+                            </div>
+                            <div class="split-bottom">
+                                Describe what you need and get AI-powered agent recommendations
+                            </div>
+                        </div>
+
+                        <!-- Create Custom Agent Card -->
+                        <div class="agent-hub-card split-card" id="projectCreateNewBtn" style="cursor: pointer;">
+                            <div class="split-top" style="color: var(--orange-primary);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                Create Custom Agent
+                            </div>
+                            <div class="split-bottom">
+                                Create your custom agent
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-controls" style="margin-top: 48px; margin-bottom: 16px;">
+                        <h2 class="font-sentient" style="font-size: 1.25rem; font-weight: 700; color: #000; margin: 0;">Agent Templates</h2>
+                    </div>
+
+                    <div class="templates-tabs-container">
+                        <div class="templates-tab active">All</div>
+                        <div class="templates-tab">CFO (Chief Financial Officer)</div>
+                        <div class="templates-tab">CPO (Chief Procurement Officer)</div>
+                        <div class="templates-tab">CLO (Chief Legal Officer)</div>
+                        <div class="templates-tab">CHRO (Chief Human Resources Officer)</div>
+                        <div class="templates-tab">CIO (Chief Information Officer)</div>
+                    </div>
+
+                    <div class="agents-grid" id="templatesGrid">
+                        <div class="agent-hub-card split-card">
+                            <div class="split-top" style="color: #000; font-size: 0.95rem;">Budget Planning Assistant</div>
+                            <div class="split-bottom" style="display:flex; flex-direction:column;">
+                                <div style="flex:1;">Automates budget creation, variance analysis, and financial forecasting to support strategic planning and resources...</div>
+                                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:16px;">
+                                    <div style="font-size:1.2rem;">💰</div>
+                                    <div class="nav-arrow">↗</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="agent-hub-card split-card">
+                            <div class="split-top" style="color: #000; font-size: 0.95rem;">Invoice Processing Agent</div>
+                            <div class="split-bottom" style="display:flex; flex-direction:column;">
+                                <div style="flex:1;">Streamlines accounts payable by automatically processing, validating, and categorizing invoices for approval...</div>
+                                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:16px;">
+                                    <div style="font-size:1.2rem;">📄</div>
+                                    <div class="nav-arrow">↗</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="agent-hub-card split-card">
+                            <div class="split-top" style="color: #000; font-size: 0.95rem;">Financial Reporting Assistant</div>
+                            <div class="split-bottom" style="display:flex; flex-direction:column;">
+                                <div style="flex:1;">Generates comprehensive financial statements, dashboards, and regulatory reports with real-time data integration...</div>
+                                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:16px;">
+                                    <div style="font-size:1.2rem;">📊</div>
+                                    <div class="nav-arrow">↗</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="agent-hub-card split-card">
+                            <div class="split-top" style="color: #000; font-size: 0.95rem;">Forecasting & Scenario Modelling Agent</div>
+                            <div class="split-bottom" style="display:flex; flex-direction:column;">
+                                <div style="flex:1;">Creates financial forecasts and analyzes multiple business scenarios to support strategic planning decisions. Provides...</div>
+                                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:16px;">
+                                    <div style="font-size:1.2rem;">🔮</div>
+                                    <div class="nav-arrow">↗</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>        </div>
+
+                <!-- Agent Config Screen -->
+                <div id="agent-config-screen" style="display: none; flex: 1; flex-direction: column;">
+                    <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; background: white; flex-shrink: 0;">
+                        <button id="backToAgentsListBtn" class="btn-cancel" style="padding: 6px 12px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; border: none; background: transparent; box-shadow: none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                            Back to Team
+                        </button>
+                        <h2 style="margin-left: 16px; font-size: 1.1rem; margin-bottom: 0;" id="configAgentTitle">Configuring Agent</h2>
+                    </div>
+                    <div class="agents-workspace" style="flex: 1; overflow: hidden; height: 100%;">
+                        <div class="agents-inner-sidebar">
                         <div class="agents-sub-item active" data-agent-tab="general">General</div>
                         <div class="agents-sub-item" data-agent-tab="integrations">Integrations</div>
                         <div class="agents-sub-item" data-agent-tab="mcp">MCP</div>
@@ -144,11 +266,7 @@
                                     <div class="form-group">
                                         <label style="font-weight:600;">Model</label>
                                         <select id="agentModelSelect" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit;">
-                                            <option value="gemini-2.0-flash">gemini-2.0-flash</option>
-                                            <option value="gemini-2.5-pro">gemini-2.5-pro</option>
-                                            <option value="gpt-4o">gpt-4o</option>
-                                            <option value="gpt-4o-mini">gpt-4o-mini</option>
-                                            <option value="claude-3-5-sonnet-20241022">claude-3-5-sonnet-20241022</option>
+                                            <option value="">Default System Gemini</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -258,10 +376,17 @@
 
                         <!-- MCP View -->
                         <div class="agent-tab-view" id="agent-tab-mcp" style="display:none;">
-                            <h3>Model Context Protocol (MCP) Servers</h3>
-                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">Connect external MCP servers to inject dynamic context / tools.</p>
-                            <div style="border:1px dashed var(--border-color); padding:30px; text-align:center; border-radius:8px; background:white;">
-                                No MCP servers connected.
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Model Context Protocol (MCP) Servers</h3>
+                                    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">Connect external MCP servers to inject dynamic context / tools.</p>
+                                </div>
+                                <button type="button" class="btn-primary" id="addMcpServerBtn">+ Add Server</button>
+                            </div>
+                            <div id="mcpServersList" style="display:flex; flex-direction:column; gap:16px;">
+                                <div id="noMcpPlaceholder" style="border:1px dashed var(--border-color); padding:30px; text-align:center; border-radius:8px; background:white;">
+                                    No MCP servers connected.
+                                </div>
                             </div>
                         </div>
 
@@ -318,14 +443,22 @@
                     </div>
                 </div>
             </div>
+            </div>
 
             <!-- Tools View -->
             <div class="ws-view" id="view-tools">
                 <div class="ws-panel">
-                    <h2>Connected Tools</h2>
-                    <p style="color:var(--text-muted); margin-bottom:20px;">Select which tools this agent can use.</p>
-                    <div id="toolsList"></div>
-                    <button class="btn-primary" id="saveToolsBtn" style="margin-top:20px;">Save Tools</button>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <h2 style="margin-top: 0; margin-bottom: 4px;">Agent Tools</h2>
+                            <p style="color:var(--text-muted); margin: 0; font-size: 0.9rem;">Manage connections and enable capabilities for this agent.</p>
+                        </div>
+                        <button class="btn-primary" id="saveToolsBtn" style="white-space: nowrap;">Save Tools</button>
+                    </div>
+                    
+                    <input type="text" id="agentToolsSearch" placeholder="Search apps (e.g., Gmail, Jira)..." style="width:100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; font-size: 0.95rem; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#6366f1';" onblur="this.style.borderColor='#e2e8f0';">
+                    
+                    <div id="agentToolsGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px;"></div>
                 </div>
             </div>
 
@@ -333,7 +466,7 @@
             <div class="ws-view" id="view-knowledge">
                 <div class="ws-panel">
                     <h2>Knowledge Base (Vector RAG)</h2>
-                    <p style="color:var(--text-muted); margin-bottom:20px;">Upload documents for this agent to reference using ChromaDB semantic search.</p>
+                    <p style="color:var(--text-muted); margin-bottom:20px;">Upload documents for this agent to reference using Supabase pgvector.</p>
                     <div style="border:2px dashed var(--border-color); border-radius:12px; padding:40px; text-align:center; margin-bottom:20px;">
                         <input type="file" id="kbFileInput" accept=".txt,.md,.csv" style="display:none;">
                         <button class="btn-primary" onclick="document.getElementById('kbFileInput').click()">Upload Document</button>
@@ -343,21 +476,85 @@
                 </div>
             </div>
 
-            <!-- Workflows View -->
+                        <!-- Workflows View -->
             <div class="ws-view" id="view-workflows">
-                <div class="ws-panel" style="max-width:800px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                        <div>
-                            <h2>Automated Workflows</h2>
-                            <p style="color:var(--text-muted);">Define multi-step sequences for tools connection.</p>
+                <div style="display: flex; gap: 24px; max-width: 1200px; margin: 0 auto; align-items: flex-start; width: 100%;">
+                    
+                    <!-- Left Column: Automated Workflows List -->
+                    <div class="ws-panel" style="flex: 2; margin-bottom: 0;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:16px;">
+                                    <h2>Automated Workflows</h2>
+
+                                </div>
+                                <p style="color:var(--text-muted);">Define multi-step sequences for tools connection.</p>
+                            </div>
+                            <button class="btn-primary" id="createNewWorkflowBtn" style="background: #10b981; border-color: #10b981;">+ Create Workflow</button>
                         </div>
-                        <button class="btn-primary" id="createNewWorkflowBtn">+ Create Workflow</button>
+                        <div id="workflowsList" style="display:flex; flex-direction:column; gap:16px;">
+                            <!-- Populated by JS -->
+                        </div>
                     </div>
-                    <div id="workflowsList" style="display:flex; flex-direction:column; gap:16px;">
-                        <!-- Populated by JS -->
+
+                    <!-- Right Column: Connected Apps Widget -->
+                    <div class="ws-panel" style="flex: 1; min-width: 320px; margin-bottom: 0; padding: 24px; background: white; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);">
+                        <div style="margin-bottom:16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+                            <h2 style="font-size: 1.1rem; font-weight:700; color:#0f172a; margin: 0 0 4px 0;">Connected Apps</h2>
+                            <p style="color:var(--text-muted); font-size:0.75rem; margin: 0;">View active accounts for each platform</p>
+                        </div>
+                        <div id="connectedAppsWidgetList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 16px; margin-top: 10px;">
+                            <!-- Populated dynamically with app logos -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>            
+            
+            <!-- Runs View -->
+            <div class="ws-view" id="view-runs">
+                <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <div>
+                            <h2 style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Execution Runs</h2>
+                            <p style="color: #64748b;">View execution history and step-by-step logs for your workflows.</p>
+                        </div>
+                        <div style="display: flex; gap: 16px;">
+                            <select id="runsFilterWorkflow" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; background: white;" onchange="loadRunsView()">
+                                <option value="">All Workflows</option>
+                            </select>
+                            <select id="runsFilterStatus" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; background: white;" onchange="loadRunsView()">
+                                <option value="">All Statuses</option>
+                                <option value="success">Success</option>
+                                <option value="error">Error</option>
+                                <option value="running">Running</option>
+                            </select>
+                            <button onclick="loadRunsView()" style="background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; color: #475569;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid #e2e8f0; background: #f8fafc;">
+                                    <th style="padding: 16px 24px; font-weight: 600; color: #475569; font-size: 0.875rem;">Run ID</th>
+                                    <th style="padding: 16px 24px; font-weight: 600; color: #475569; font-size: 0.875rem;">Workflow Name</th>
+                                    <th style="padding: 16px 24px; font-weight: 600; color: #475569; font-size: 0.875rem;">Started At</th>
+                                    <th style="padding: 16px 24px; font-weight: 600; color: #475569; font-size: 0.875rem;">Status</th>
+                                    <th style="padding: 16px 24px; font-weight: 600; color: #475569; font-size: 0.875rem;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="runsListTbody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>            <!-- Settings View -->
+            </div>
+
+            <!-- Settings View -->
             <div class="ws-view" id="view-settings">
                 <div class="ws-panel" style="max-width:850px;">
                     <h2>Workspace Settings</h2>
@@ -367,26 +564,6 @@
                         <div class="settings-block-card active" data-settings-target="llm">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
                             <span>LLM Settings</span>
-                        </div>
-                        <div class="settings-block-card" data-settings-target="servicenow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-                            <span>ServiceNow</span>
-                            <span class="conn-badge" id="badge-servicenow" style="font-size:0.7rem; color:var(--text-muted); font-weight:500;">Disconnected</span>
-                        </div>
-                        <div class="settings-block-card" data-settings-target="gmail">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                            <span>Gmail</span>
-                            <span class="conn-badge" id="badge-gmail" style="font-size:0.7rem; color:var(--text-muted); font-weight:500;">Disconnected</span>
-                        </div>
-                        <div class="settings-block-card" data-settings-target="salesforce">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
-                            <span>Salesforce</span>
-                            <span class="conn-badge" id="badge-salesforce" style="font-size:0.7rem; color:var(--text-muted); font-weight:500;">Disconnected</span>
-                        </div>
-                        <div class="settings-block-card" data-settings-target="jira">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
-                            <span>Jira</span>
-                            <span class="conn-badge" id="badge-jira" style="font-size:0.7rem; color:var(--text-muted); font-weight:500;">Disconnected</span>
                         </div>
                     </div>
 
@@ -404,8 +581,8 @@
                         </div>
 
                         <div class="settings-section" style="margin-top:24px;">
-                            <h3>LLM Key Safe (Secure DB Storage)</h3>
-                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Add custom keys encrypted with AES-256 Fernet.</p>
+                            <h3>Project LLM Key Safe</h3>
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Add multiple model connections and custom keys specifically for this project.</p>
                             <form id="addLlmConfigForm" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                                     <div class="form-group" style="margin-bottom:0;">
@@ -436,96 +613,50 @@
                         </div>
                     </div>
 
-                    <!-- Panel 2: ServiceNow -->
-                    <div class="settings-config-panel" id="settings-panel-servicenow">
-                        <h3>ServiceNow Credentials</h3>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure ServiceNow Table & Incident API connection.</p>
-                        <div class="form-group"><label>Instance URL</label><input type="text" id="snUrl" placeholder="https://your-instance.service-now.com"></div>
-                        <div class="form-group"><label>Client ID</label><input type="text" id="snClientId" placeholder="OAuth Client ID"></div>
-                        <div class="form-group"><label>Client Secret</label><input type="password" id="snClientSecret" placeholder="OAuth Client Secret"></div>
-                        <div class="form-group"><label>Username</label><input type="text" id="snUser" placeholder="username"></div>
-                        <div class="form-group"><label>Password</label><input type="password" id="snPass" placeholder="password"></div>
-                        <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button class="btn-primary" id="saveSnCreds">Save Credentials</button>
-                            <button type="button" id="testSnCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
-                        </div>
-                        <div id="snTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
-                    </div>
-
-                    <!-- Panel 3: Gmail -->
-                    <div class="settings-config-panel" id="settings-panel-gmail">
-                        <h3>Gmail Credentials</h3>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure standard Gmail App Password/Token integration.</p>
-                        <div class="form-group"><label>Gmail Username / Email</label><input type="text" id="gmUser" placeholder="user@gmail.com"></div>
-                        <div class="form-group"><label>App Password / Token</label><input type="password" id="gmToken" placeholder="Enter App Password / Token"></div>
-                        <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button class="btn-primary" id="saveGmCreds">Save Credentials</button>
-                            <button type="button" id="testGmCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
-                        </div>
-                        <div id="gmTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
-                    </div>
-
-                    <!-- Panel 4: Salesforce -->
-                    <div class="settings-config-panel" id="settings-panel-salesforce">
-                        <h3>Salesforce Credentials</h3>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure Salesforce CRM connection via simple-salesforce.</p>
-                        <div class="form-group"><label>Instance URL</label><input type="text" id="sfUrl" placeholder="https://your-instance.salesforce.com"></div>
-                        <div class="form-group"><label>Username</label><input type="text" id="sfUser" placeholder="user@company.com"></div>
-                        <div class="form-group"><label>Password</label><input type="password" id="sfPass" placeholder="password"></div>
-                        <div class="form-group"><label>Security Token</label><input type="text" id="sfToken" placeholder="security token"></div>
-                        <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button class="btn-primary" id="saveSfCreds">Save Credentials</button>
-                            <button type="button" id="testSfCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
-                        </div>
-                        <div id="sfTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
-                    </div>
-
-                    <!-- Panel 5: Jira -->
-                    <div class="settings-config-panel" id="settings-panel-jira">
-                        <h3>Jira Credentials</h3>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure Jira Cloud connection via basic email token.</p>
-                        <div class="form-group"><label>Jira Instance URL</label><input type="text" id="jrUrl" placeholder="https://your-domain.atlassian.net"></div>
-                        <div class="form-group"><label>Email / Username</label><input type="text" id="jrUser" placeholder="user@atlassian.com"></div>
-                        <div class="form-group"><label>API Token</label><input type="password" id="jrToken" placeholder="Enter Jira API Token"></div>
-                        <div style="display:flex; gap:10px; margin-top:16px;">
-                            <button class="btn-primary" id="saveJrCreds">Save Credentials</button>
-                            <button type="button" id="testJrCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
-                        </div>
-                        <div id="jrTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
-                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Create Workflow Modal -->
-    <div class="modal-overlay" id="workflowModal">
-        <div class="modal" style="width:600px; max-height:85vh;">
-            <div class="modal-header">
-                <h3>Create New Workflow</h3>
-                <button class="close-btn" id="closeWorkflowModalBtn">&times;</button>
+    <!-- Custom Canvas Workflow Editor Modal -->
+    <div class="modal-overlay" id="workflowModal" style="z-index:9999;">
+        <div class="modal workflow-canvas-modal" style="padding:0; display:flex; flex-direction:column; background:#f8fafc; overflow:hidden;">
+        <div id="v2-editor" style="display:flex; flex:1; overflow:hidden;">
+            <div style="display:flex; flex:1; overflow:hidden;">
+                <iframe id="react-flow-frame" src="/v2-canvas" style="width:100%; height:100%; border:none;"></iframe>
             </div>
-            <form id="createWorkflowForm">
-                <div class="form-group">
-                    <label>Workflow Name</label>
-                    <input type="text" id="workflowName" required placeholder="e.g. Employee Onboarding Flow">
+        </div>
+        </div>
+    </div>
+    <!-- Variables Manager Modal -->
+    <div id="variablesPanelModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:16px; width:780px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 25px 50px rgba(0,0,0,0.25); overflow:hidden;">
+            <!-- Modal Header -->
+            <div style="padding:20px 24px; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; background:#fff;">
+                <div>
+                    <h2 style="margin:0; font-size:1.15rem; font-weight:700; color:#0f172a;">{x} Workflow Variables</h2>
+                    <p style="margin:4px 0 0; font-size:0.78rem; color:#64748b;">Define workflow inputs and outputs with types. Use <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{variable_name}}</code> in node fields to inject values at runtime.</p>
                 </div>
-                
-                <div class="form-group">
-                    <label style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>Steps</span>
-                        <button type="button" class="btn-primary" id="addStepBtn" style="padding:4px 8px; font-size:0.75rem;">+ Add Step</button>
-                    </label>
-                    <div id="workflowStepsList" style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
+                <button onclick="closeVariablesPanel()" style="background:none;border:none;font-size:1.4rem;color:#94a3b8;cursor:pointer;line-height:1;">&times;</button>
+            </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancel" id="cancelWorkflowModalBtn">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Workflow</button>
+            <!-- Tab Bar: Inputs / Outputs -->
+            <div style="display:flex; border-bottom:1px solid #e2e8f0; background:#f8fafc;">
+                <button id="varTab-input" onclick="switchVarTab('input')" style="flex:1; padding:12px; border:none; border-bottom:3px solid #6366f1; background:transparent; font-weight:700; color:#4f46e5; cursor:pointer; font-size:0.85rem;">&#8594; INPUT Arguments</button>
+                <button id="varTab-output" onclick="switchVarTab('output')" style="flex:1; padding:12px; border:none; border-bottom:3px solid transparent; background:transparent; font-weight:600; color:#64748b; cursor:pointer; font-size:0.85rem;">&#8592; OUTPUT Arguments</button>
+            </div>
+
+            <!-- Variable Rows -->
+            <div id="varsPanelBody" style="flex:1; overflow-y:auto; padding:20px;"></div>
+
+            <!-- Footer -->
+            <div style="padding:16px 24px; border-top:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; background:#f8fafc;">
+                <button id="addVarBtn" onclick="addVariable()" style="padding:8px 18px; background:#6366f1; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">+ Add Variable</button>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="closeVariablesPanel()" style="padding:8px 18px; background:#f1f5f9; color:#334155; border:1px solid #e2e8f0; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">Close</button>
+                    <button onclick="saveVariablesAndClose()" style="padding:8px 18px; background:#0f172a; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">&#10003; Save Variables</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -553,7 +684,262 @@
             </form>
         </div>
     </div>
+    
+    <!-- Connection Accounts Modal -->
+    <div class="modal-overlay" id="connectionAccountsModal" style="z-index:99999;">
+        <div class="modal" style="width: 580px; max-width: 90vw; background: white; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; padding: 0; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);">
+            <div style="padding: 20px 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 id="connModalTitle" style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #0f172a;">Manage Connected Accounts</h3>
+                    <p style="margin: 4px 0 0 0; font-size: 0.75rem; color: #64748b;">Configure separate authenticated accounts.</p>
+                </div>
+                <button onclick="closeConnectionAccountsModal()" style="background: none; border: none; font-size: 1.4rem; color: #94a3b8; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <!-- Section 1: Connection Form (Add/Edit) -->
+                <div id="connAccountFormContainer" style="display: none; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+                    <h4 id="connFormTitle" style="margin: 0 0 12px 0; font-size: 0.9rem; font-weight: 600; color: #1e293b;">+ Add Account</h4>
+                    <input type="hidden" id="connFormAccountId">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; display: block;">Connection Name</label>
+                            <input type="text" id="connFormAccountName" placeholder="e.g. My Personal Gmail" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;">
+                        </div>
+                        <div id="connDynamicFields" style="display: flex; flex-direction: column; gap: 12px;">
+                            <!-- App specific fields will be injected here -->
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 4px; align-items: center; justify-content: flex-end;">
+                            <span id="connTestStatus" style="font-size: 0.75rem; font-weight: 600; display: none;"></span>
+                            <button type="button" class="btn-cancel" onclick="testConnAccount()" style="padding: 6px 14px; font-size: 0.8rem; border: 1px solid #6366f1; color: #6366f1; background: none; font-weight:600;">Test Connection</button>
+                            <button type="button" class="btn-cancel" onclick="hideConnAccountForm()" style="padding: 6px 14px; font-size: 0.8rem; font-weight:600;">Cancel</button>
+                            <button type="button" class="btn-primary" onclick="saveConnAccount()" style="padding: 6px 14px; font-size: 0.8rem; background: #6366f1; font-weight:600;">Save</button>
+                        </div>
+                    </div>
+                </div>
 
-    <script src="/project.js"></script>
+                <!-- Section 2: List of Existing Accounts -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 style="margin: 0; font-size: 0.9rem; font-weight: 600; color: #1e293b;">Connected Accounts</h4>
+                        <button class="btn-primary" onclick="showAddConnAccountForm()" style="padding: 6px 12px; font-size: 0.8rem; background: #10b981;">+ Add Account</button>
+                    </div>
+                    <div id="connAccountsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+                        <!-- JS injected list items -->
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
+                <button class="btn-cancel" onclick="closeConnectionAccountsModal()" style="padding: 8px 16px; font-size: 0.85rem;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Run Workflow Modal -->
+    <div id="runWorkflowModal" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 10000; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px);">
+        <div style="background: white; border-radius: 12px; width: 100%; max-width: 450px; overflow: hidden; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;">
+            <div style="padding: 20px 24px; border-bottom: 1px solid #f1f5f9;">
+                <h2 id="runModalTitle" style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;">Run Workflow</h2>
+                <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #64748b;">Provide values for your workflow variables before execution.</p>
+            </div>
+            
+            <div id="runModalBody" style="padding: 24px; max-height: 60vh; overflow-y: auto;">
+                <!-- Inputs injected dynamically -->
+            </div>
+
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn-cancel" onclick="closeRunModal()" style="padding: 8px 16px; font-size: 0.85rem; border: none; background: none; color: #475569; font-weight: 500;">Cancel</button>
+                <button class="btn-primary" id="executeRunBtn" onclick="executeRunWorkflow()" style="padding: 8px 16px; font-size: 0.85rem; background: #10b981; display: flex; align-items: center; gap: 6px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Run Workflow
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inspect Run Modal -->
+    <div id="inspectRunModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+        <div style="background:white; width:100%; max-width:800px; max-height:85vh; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); overflow:hidden;">
+            <div style="padding:20px 24px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; background:#f8fafc;">
+                <div>
+                    <h2 id="inspectModalTitle" style="margin:0; font-size:1.25rem; font-weight:700; color:#0f172a;">Run Details</h2>
+                    <p id="inspectModalSubtitle" style="margin:4px 0 0 0; font-size:0.875rem; color:#64748b;">Step-by-step execution logs</p>
+                </div>
+                <button onclick="document.getElementById('inspectRunModal').style.display='none'" style="background:none; border:none; color:#94a3b8; cursor:pointer; padding:8px; border-radius:50%;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#475569'" onmouseout="this.style.background='none'; this.style.color='#94a3b8'">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div id="inspectModalBody" style="padding:24px; overflow-y:auto; flex:1; background:#f8fafc; font-family: monospace; font-size: 0.875rem;">
+                <!-- Populated by JS -->
+            </div>
+            <div style="padding:16px 24px; border-top:1px solid #e2e8f0; display:flex; justify-content:flex-end; background:white;">
+                <button onclick="document.getElementById('inspectRunModal').style.display='none'" style="padding:8px 16px; border-radius:8px; font-size:0.875rem; font-weight:600; cursor:pointer; background:white; border:1px solid #cbd5e1; color:#475569;">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Agent Tool Config Modal -->
+    <div id="agentToolConfigModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+        <div style="background:white; width:100%; max-width:600px; max-height:85vh; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); overflow:hidden;">
+            <div style="padding:20px 24px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; background:#f8fafc;">
+                <div id="agentToolModalHeader" style="display: flex; align-items: center; gap: 12px;">
+                    <!-- Logo and Name populated by JS -->
+                </div>
+                <button onclick="closeAgentToolConfigModal()" style="background:none; border:none; color:#94a3b8; cursor:pointer; padding:8px; border-radius:50%;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#475569'" onmouseout="this.style.background='none'; this.style.color='#94a3b8'">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            
+            <div style="padding: 24px; border-bottom: 1px solid #f1f5f9; background: white; display: flex; justify-content: space-between; align-items: center;">
+                <div id="agentToolModalStatus"></div>
+                <button id="agentToolModalManageBtn" style="background:var(--primary-color); color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-size:0.85rem; font-weight:600; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+            </div>
+            
+            <div id="agentToolModalBody" style="padding:24px; overflow-y:auto; flex:1; background:#f8fafc;">
+                <!-- Capabilities populated by JS -->
+            </div>
+            
+            <div style="padding:16px 24px; border-top:1px solid #e2e8f0; display:flex; justify-content:flex-end; background:white;">
+                <button onclick="closeAgentToolConfigModal()" style="padding:8px 24px; background:var(--primary-color); color:white; border:none; border-radius:8px; font-size:0.875rem; font-weight:600; cursor:pointer;">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+<div id="autocompleteDropdown" style="display:none; position:absolute; z-index:9999; background:white; border:1px solid var(--border-color); border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.12); max-height:250px; overflow-y:auto; min-width:200px; padding:4px 0;"></div>
+
+    
+    <!-- Integration Auth Modal -->
+    <div class="modal-overlay" id="integrationAuthModal">
+        <div class="modal" style="width:500px;">
+            <div class="modal-header">
+                <h3 id="integrationAuthModalTitle">Connect Integration</h3>
+                <button class="close-btn" id="closeIntegrationAuthModalBtn">&times;</button>
+            </div>
+            <div style="padding: 24px;" id="integrationAuthModalBody">
+                <!-- Dynamic form gets appended here -->
+            </div>
+            <div style="padding: 16px 24px; border-top: 1px solid var(--border-color); display:flex; justify-content:flex-end; gap:12px; background:#f8fafc; border-radius: 0 0 12px 12px;">
+                <button type="button" class="btn-cancel" id="integrationAuthTestBtn">Test Connection</button>
+                <button type="button" class="btn-primary" id="integrationAuthSaveBtn">Save Connection</button>
+            </div>
+            <div id="integrationAuthModalStatus" style="padding: 16px 24px; display:none; font-size:0.85rem;"></div>
+        </div>
+    </div>
+
+    <!-- Create Agent from Prompt Modal -->
+    <div class="modal-overlay" id="agentPromptModal">
+        <div class="modal" style="width:600px;">
+            <div class="modal-header">
+                <h3>Create Agent from Prompt</h3>
+                <button class="close-btn" id="closeAgentPromptModalBtn">&times;</button>
+            </div>
+            <div style="padding: 24px;">
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:16px;">Describe the agent you want to create in plain English. Our AI will automatically configure the optimal role, goals, and system prompt for it.</p>
+                <form id="agentPromptForm" style="display:flex; flex-direction:column; gap:16px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <textarea id="agentIntentInput" rows="5" placeholder="e.g. I need an agent that reviews pull requests, identifies security vulnerabilities, and summarizes the code changes in a structured markdown format." required style="width:100%; padding:12px; border:1px solid var(--border-color); border-radius:8px; font-family:inherit; resize:vertical;"></textarea>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:8px;">
+                        <button type="submit" class="btn-primary" id="generateAgentBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px; display:inline-block; vertical-align:middle;"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg>
+                            Generate Agent
+                        </button>
+                    </div>
+                </form>
+                <div id="agentGenLoading" style="display:none; text-align:center; padding: 20px; color: var(--text-muted); font-size: 0.9rem;">
+                    <div class="spinner" style="margin: 0 auto 10px; width:24px; height:24px; border:3px solid var(--border-color); border-top-color:var(--primary-color); border-radius:50%; animation: spin 1s linear infinite;"></div>
+                    Generating intelligent agent... This may take up to 30 seconds.
+                    <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div id="settingsFormsContainer" style="display:none;">
+    <!-- Salesforce -->
+    <div class="settings-config-panel" id="settings-panel-salesforce">
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Instance URL</label><input type="text" id="sfUrl" placeholder="https://your-instance.salesforce.com" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Username</label><input type="text" id="sfUser" placeholder="user@company.com" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Password</label><input type="password" id="sfPass" placeholder="password" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Security Token</label><input type="password" id="sfToken" placeholder="token" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+            <button type="button" class="btn-cancel" id="testSfCredsBtn">Test Connection</button>
+            <button type="button" class="btn-primary" id="saveSfCreds">Save Credentials</button>
+        </div>
+        <div id="sfTestStatus" style="margin-top:12px; font-size:0.85rem; display:none; padding:12px; border-radius:6px;"></div>
+    </div>
+
+    <!-- ServiceNow -->
+    <div class="settings-config-panel" id="settings-panel-servicenow">
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Instance URL</label><input type="text" id="snUrl" placeholder="https://dev12345.service-now.com" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Client ID</label><input type="text" id="snClientId" placeholder="Client ID" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Client Secret</label><input type="password" id="snClientSecret" placeholder="Client Secret" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Username</label><input type="text" id="snUser" placeholder="admin" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Password</label><input type="password" id="snPass" placeholder="password" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+            <button type="button" class="btn-cancel" id="testSnCredsBtn">Test Connection</button>
+            <button type="button" class="btn-primary" id="saveSnCreds">Save Credentials</button>
+        </div>
+        <div id="snTestStatus" style="margin-top:12px; font-size:0.85rem; display:none; padding:12px; border-radius:6px;"></div>
+    </div>
+
+    <!-- Gmail -->
+    <div class="settings-config-panel" id="settings-panel-gmail">
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Gmail Username</label><input type="text" id="gmUser" placeholder="user@gmail.com" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">App Password</label><input type="password" id="gmToken" placeholder="App Password" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+            <button type="button" class="btn-cancel" id="testGmCredsBtn">Test Connection</button>
+            <button type="button" class="btn-primary" id="saveGmCreds">Save Credentials</button>
+        </div>
+        <div id="gmTestStatus" style="margin-top:12px; font-size:0.85rem; display:none; padding:12px; border-radius:6px;"></div>
+    </div>
+
+    <!-- Jira -->
+    <div class="settings-config-panel" id="settings-panel-jira">
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Instance URL</label><input type="text" id="jrUrl" placeholder="https://company.atlassian.net" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Username / Email</label><input type="text" id="jrUser" placeholder="user@company.com" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">API Token</label><input type="password" id="jrToken" placeholder="token" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></div>
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+            <button type="button" class="btn-cancel" id="testJrCredsBtn">Test Connection</button>
+            <button type="button" class="btn-primary" id="saveJrCreds">Save Credentials</button>
+        </div>
+        <div id="jrTestStatus" style="margin-top:12px; font-size:0.85rem; display:none; padding:12px; border-radius:6px;"></div>
+    </div>
+</div>
+
+    <!-- Add MCP Server Modal -->
+    <div id="addMcpModal" class="modal-overlay" style="display:none; align-items:center; justify-content:center; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999;">
+        <div class="modal-content" style="background:white; padding:24px; border-radius:12px; max-width:500px; width:100%; box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0; font-size:1.25rem;">Add MCP Server</h3>
+                <span class="close-modal" onclick="document.getElementById('addMcpModal').style.display='none'" style="cursor:pointer; font-size:1.5rem; color:var(--text-muted);">&times;</span>
+            </div>
+            <form id="addMcpForm" style="display:flex; flex-direction:column; gap:16px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Server Name</label>
+                    <input type="text" id="mcpName" required placeholder="e.g. Postgres DB Server" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px;">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Command / URL</label>
+                    <input type="text" id="mcpCommand" required placeholder="e.g. npx, docker, or ws://..." style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px;">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Arguments (Optional)</label>
+                    <input type="text" id="mcpArgs" placeholder="e.g. -y @modelcontextprotocol/server-postgres" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px;">
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+                    <button type="button" class="btn-cancel" onclick="document.getElementById('addMcpModal').style.display='none'" style="padding:10px 16px; border-radius:6px; background:none; border:none; cursor:pointer;">Cancel</button>
+                    <button type="submit" class="btn-primary" style="padding:10px 16px; border-radius:6px; border:none; cursor:pointer;">Connect Server</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/project.js?v=41"></script>
 </body>
 </html>

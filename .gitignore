@@ -30,3 +30,5 @@ Thumbs.db
 
 # Artifacts
 *.pyc
+node_modules
+node_modules

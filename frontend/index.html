@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ai Anveshana Platform - Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <script>
@@ -22,12 +23,16 @@
         </div>
         <div class="header-right">
             <div class="profile-container">
-                <div class="profile-avatar" id="userAvatar" style="cursor:pointer;">A</div>
+                <div class="profile-avatar" id="userAvatar" style="cursor:pointer;">U</div>
                 <div class="profile-dropdown" id="profileDropdown">
                     <div class="profile-dropdown-header">
-                        <div class="profile-dropdown-username" id="dropdownUsername">admin</div>
-                        <div class="profile-dropdown-role">Platform Admin</div>
+                        <div class="profile-dropdown-username" id="dropdownUsername">User</div>
+                        <div class="profile-dropdown-role">User</div>
                     </div>
+                    <button class="profile-dropdown-item" id="openGlobalSettingsBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        LLM Setting
+                    </button>
                     <button class="profile-dropdown-item" id="dropdownLogoutBtn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                         Log Out
@@ -54,18 +59,63 @@
 
         <div class="projects-grid" id="projectsGrid">
             <div class="project-card create-card" id="createNewBtn">
-                <div style="font-size:2.5rem; color:var(--primary-color); margin-bottom:8px;">+</div>
+                <div style="font-size:2.5rem; color:var(--accent-color); margin-bottom:8px;">+</div>
                 <div style="font-weight:600; color:var(--text-main);">Create New Project</div>
-                <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:4px;">Configure a new custom agent with dynamic tool bindings</div>
+                <div style="font-size:0.85rem; color:var(--text-muted); text-align:center; margin-top:4px;">Configure a new custom agent with dynamic tool bindings</div>
             </div>
         </div>
     </main>
+
+    
+    <!-- Global Settings Modal -->
+    <div class="modal-overlay" id="globalSettingsModal">
+        <div class="modal" style="width:580px; max-height: 85vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h3>LLM Setting</h3>
+                <button class="close-btn" id="closeGlobalSettingsBtn">&times;</button>
+            </div>
+            <div style="padding: 20px;">
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Configure global LLM connections that can be used across all your projects.</p>
+                <form id="addGlobalLlmForm" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Provider</label>
+                            <select id="globalLlmProvider" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit;">
+                                <option value="gemini">Google Gemini</option>
+                                <option value="openai">OpenAI</option>
+                                <option value="anthropic">Anthropic</option>
+                                <option value="mistral">Mistral AI</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Model Name</label>
+                            <input type="text" id="globalLlmModel" placeholder="e.g. gpt-4o, gemini-1.5-pro">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>API Key</label>
+                        <input type="password" id="globalLlmKey" placeholder="Enter API Key">
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:8px;">
+                        <button type="submit" class="btn-primary" id="saveGlobalLlmBtn">Add Global LLM</button>
+                        <button type="button" id="testGlobalLlmBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                    </div>
+                    <div id="globalLlmTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:8px; display:none;"></div>
+                </form>
+                
+                <h4>Your Global LLMs</h4>
+                <div id="globalLlmConfigsList" style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+                    <!-- Configs injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Create Project Modal -->
     <div class="modal-overlay" id="createModal">
         <div class="modal" style="width:480px;">
             <div class="modal-header">
-                <h3>Create New Agent Project</h3>
+                <h3>Create New Project</h3>
                 <button class="close-btn" id="closeModalBtn">&times;</button>
             </div>
             <form id="createProjectForm">
@@ -77,19 +127,8 @@
                     <label>Description</label>
                     <input type="text" id="projectDesc" required placeholder="e.g. Resolves IT tickets via email">
                 </div>
-                <div class="form-group">
-                    <label>Agent System Prompt</label>
-                    <textarea id="systemPrompt" rows="4" placeholder="You are an IT support agent. Help employees resolve technical issues by checking their emails, scheduling follow-up meetings, and querying the knowledge base..." style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit; resize:vertical;"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Connect Tools</label>
-                    <div id="toolCheckboxes" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px;">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-cancel" id="cancelModalBtn">Cancel</button>
-                    <button type="submit" class="btn-primary">Create Agent</button>
+                    <button type="submit" class="btn btn-primary">Create Project</button>
                 </div>
             </form>
         </div>

@@ -1,0 +1,287 @@
+--- around 500 ---
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure standard Gmail App Password/Token integration.</p>
+                        <div class="form-group"><label>Gmail Username / Email</label><input type="text" id="gmUser" placeholder="user@gmail.com"></div>
+                        <div class="form-group"><label>App Password / Token</label><input type="password" id="gmToken" placeholder="Enter App Password / Token"></div>
+                        <div style="display:flex; gap:10px; margin-top:16px;">
+                            <button class="btn-primary" id="saveGmCreds">Save Credentials</button>
+                            <button type="button" id="testGmCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                        </div>
+                        <div id="gmTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
+                    </div>
+
+                    <!-- Panel 4: Salesforce -->
+                    <div class="settings-config-panel" id="settings-panel-salesforce">
+                        <h3>Salesforce Credentials</h3>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure Salesforce CRM connection via simple-salesforce.</p>
+                        <div class="form-group"><label>Instance URL</label><input type="text" id="sfUrl" placeholder="https://your-instance.salesforce.com"></div>
+                        <div class="form-group"><label>Username</label><input type="text" id="sfUser" placeholder="user@company.com"></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="sfPass" placeholder="password"></div>
+                        <div class="form-group"><label>Security Token</label><input type="text" id="sfToken" placeholder="security token"></div>
+                        <div style="display:flex; gap:10px; margin-top:16px;">
+                            <button class="btn-primary" id="saveSfCreds">Save Credentials</button>
+                            <button type="button" id="testSfCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                        </div>
+                        <div id="sfTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
+                    </div>
+
+
+--- around 520 ---
+                            <button type="button" id="testSfCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                        </div>
+                        <div id="sfTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
+                    </div>
+
+                    <!-- Panel 5: Jira -->
+                    <div class="settings-config-panel" id="settings-panel-jira">
+                        <h3>Jira Credentials</h3>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure Jira Cloud connection via basic email token.</p>
+                        <div class="form-group"><label>Jira Instance URL</label><input type="text" id="jrUrl" placeholder="https://your-domain.atlassian.net"></div>
+                        <div class="form-group"><label>Email / Username</label><input type="text" id="jrUser" placeholder="user@atlassian.com"></div>
+                        <div class="form-group"><label>API Token</label><input type="password" id="jrToken" placeholder="Enter Jira API Token"></div>
+                        <div style="display:flex; gap:10px; margin-top:16px;">
+                            <button class="btn-primary" id="saveJrCreds">Save Credentials</button>
+                            <button type="button" id="testJrCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                        </div>
+                        <div id="jrTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom Canvas Workflow Editor Modal -->
+    <div class="modal-overlay" id="workflowModal" style="z-index:9999;">
+
+--- around 540 ---
+        </main>
+    </div>
+
+    <!-- Custom Canvas Workflow Editor Modal -->
+    <div class="modal-overlay" id="workflowModal" style="z-index:9999;">
+        <div class="modal workflow-canvas-modal" style="width:95vw; height:90vh; max-width:1400px; padding:0; display:flex; flex-direction:column; background:#f8fafc; border-radius:12px; overflow:hidden;">
+            <!-- Header -->
+            <div class="editor-header" style="padding:16px 24px; background:#fff; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between;">
+                <div style="flex:1;">
+                    <input type="text" id="workflowName" placeholder="Untitled Workflow" style="font-size:1.25rem; font-weight:700; background:transparent; border:none; color:#0f172a; outline:none; width:100%;">
+                </div>
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <select id="workflowStatus" style="padding:8px 12px; border:1px solid #e2e8f0; border-radius:8px; outline:none;">
+                        <option value="draft">Draft</option>
+                        <option value="active">Active</option>
+                    </select>
+                    <button class="btn" style="padding:8px 16px; border:1px solid #e2e8f0; border-radius:8px; background:#fff; cursor:pointer;" id="cancelWorkflowModalBtn" onclick="closeWorkflowEditor()">Cancel</button>
+                    <button class="btn" style="padding:8px 16px; background:#f1f5f9; color:#334155; border:1px solid #e2e8f0; border-radius:8px; font-weight:600; cursor:pointer;" id="openVarsPanelBtn" onclick="openVariablesPanel()">{x} Variables</button>
+                    <button class="btn" style="padding:8px 16px; background:#6366f1; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer;" id="saveWorkflowBtn" onclick="saveWorkflow()">Save Workflow</button>
+                    <button class="btn" style="padding:8px 16px; background:#22c55e; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer;" id="executeWorkflowBtn" onclick="executeWorkflow()">&#9654; Run Workflow</button>
+                </div>
+            </div>
+
+            <!-- Canvas Workspace -->
+            <div style="display:flex; flex:1; overflow:hidden;">
+
+--- around 560 ---
+                </div>
+            </div>
+
+            <!-- Canvas Workspace -->
+            <div style="display:flex; flex:1; overflow:hidden;">
+                
+                <!-- Left Sidebar: Toolbox (Dynamically populated from Activepieces) -->
+                <div style="width:300px; background:#fff; border-right:1px solid #e2e8f0; display:flex; flex-direction:column; overflow-y:auto; flex-shrink:0;">
+                    <div style="padding:16px; border-bottom:1px solid #f1f5f9;">
+                        <h3 style="margin:0; font-size:1rem; font-weight:700; color:#0f172a;">Apps & Pieces</h3>
+                        <p style="margin:4px 0 0 0; font-size:0.75rem; color:#64748b;">Click to add to your flow</p>
+                        <input type="text" id="pieceSearch" placeholder="Search apps..." style="width:100%; padding:8px; margin-top:12px; border:1px solid #e2e8f0; border-radius:6px; font-size:0.85rem;" oninput="filterPieces(this.value)">
+                    </div>
+                    <div id="dynamic-toolbox" style="padding:16px; display:flex; flex-direction:column; gap:10px;">
+                        <div style="text-align:center; color:#94a3b8; font-size:0.85rem; padding:20px;">
+                            <div style="width:24px; height:24px; border:2px solid #e2e8f0; border-top-color:#6366f1; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 10px;"></div>
+                            Loading Apps...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center: Drawflow Canvas -->
+                <div class="canvas-container" style="flex:1; background:#f8fafc; position:relative; overflow:hidden; padding:0;">
+                    <div id="drawflow" style="width:100%; height:100%;"></div>
+                </div>
+
+--- around 580 ---
+
+                <!-- Center: Drawflow Canvas -->
+                <div class="canvas-container" style="flex:1; background:#f8fafc; position:relative; overflow:hidden; padding:0;">
+                    <div id="drawflow" style="width:100%; height:100%;"></div>
+                </div>
+
+                <!-- Right Sidebar: Properties Configuration -->
+                <div style="width:360px; background:#fff; border-left:1px solid #e2e8f0; display:flex; flex-direction:column; flex-shrink:0;">
+                    <div style="padding:16px; border-bottom:1px solid #f1f5f9;">
+                        <h3 style="margin:0; font-size:1rem; font-weight:700; color:#0f172a;">Step Configuration</h3>
+                    </div>
+                    <div id="step-properties-panel" style="padding:20px; overflow-y:auto; flex:1;">
+                        <div style="text-align:center; color:#94a3b8; font-size:0.85rem; padding-top:40px;">Select a step to configure its properties.</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Variables Manager Modal -->
+    <div id="variablesPanelModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:16px; width:780px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 25px 50px rgba(0,0,0,0.25); overflow:hidden;">
+            <!-- Modal Header -->
+
+--- around 600 ---
+
+    <!-- Variables Manager Modal -->
+    <div id="variablesPanelModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:16px; width:780px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 25px 50px rgba(0,0,0,0.25); overflow:hidden;">
+            <!-- Modal Header -->
+            <div style="padding:20px 24px; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; background:#fff;">
+                <div>
+                    <h2 style="margin:0; font-size:1.15rem; font-weight:700; color:#0f172a;">{x} Workflow Variables</h2>
+                    <p style="margin:4px 0 0; font-size:0.78rem; color:#64748b;">Define workflow inputs and outputs with types. Use <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{variable_name}}</code> in node fields to inject values at runtime.</p>
+                </div>
+                <button onclick="closeVariablesPanel()" style="background:none;border:none;font-size:1.4rem;color:#94a3b8;cursor:pointer;line-height:1;">&times;</button>
+            </div>
+
+            <!-- Tab Bar: Inputs / Outputs -->
+            <div style="display:flex; border-bottom:1px solid #e2e8f0; background:#f8fafc;">
+                <button id="varTab-input" onclick="switchVarTab('input')" style="flex:1; padding:12px; border:none; border-bottom:3px solid #6366f1; background:transparent; font-weight:700; color:#4f46e5; cursor:pointer; font-size:0.85rem;">&#8594; INPUT Arguments</button>
+                <button id="varTab-output" onclick="switchVarTab('output')" style="flex:1; padding:12px; border:none; border-bottom:3px solid transparent; background:transparent; font-weight:600; color:#64748b; cursor:pointer; font-size:0.85rem;">&#8592; OUTPUT Arguments</button>
+            </div>
+
+            <!-- Variable Rows -->
+            <div id="varsPanelBody" style="flex:1; overflow-y:auto; padding:20px;"></div>
+
+            <!-- Footer -->
+            <div style="padding:16px 24px; border-top:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; background:#f8fafc;">
+                <button id="addVarBtn" onclick="addVariable()" style="padding:8px 18px; background:#6366f1; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">+ Add Variable</button>
+
+--- around 620 ---
+            <div id="varsPanelBody" style="flex:1; overflow-y:auto; padding:20px;"></div>
+
+            <!-- Footer -->
+            <div style="padding:16px 24px; border-top:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; background:#f8fafc;">
+                <button id="addVarBtn" onclick="addVariable()" style="padding:8px 18px; background:#6366f1; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">+ Add Variable</button>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="closeVariablesPanel()" style="padding:8px 18px; background:#f1f5f9; color:#334155; border:1px solid #e2e8f0; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">Close</button>
+                    <button onclick="saveVariablesAndClose()" style="padding:8px 18px; background:#0f172a; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">&#10003; Save Variables</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Execute Workflow Modal -->
+    <div class="modal-overlay" id="executeWorkflowModal">
+        <div class="modal" style="width:480px;">
+            <div class="modal-header">
+                <h3>Execute Workflow</h3>
+                <button class="close-btn" id="closeExecModalBtn">&times;</button>
+            </div>
+            <form id="executeWorkflowForm">
+                <input type="hidden" id="execWorkflowId">
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Enter parameters required for this workflow.</p>
+                <div id="execFieldsList" style="display:flex; flex-direction:column; gap:12px;">
+                    <!-- Populated dynamically by JS -->
+
+--- around 640 ---
+            <form id="executeWorkflowForm">
+                <input type="hidden" id="execWorkflowId">
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Enter parameters required for this workflow.</p>
+                <div id="execFieldsList" style="display:flex; flex-direction:column; gap:12px;">
+                    <!-- Populated dynamically by JS -->
+                </div>
+                <div id="execResultPanel" style="margin-top:16px; padding:12px; background:#f3f4f6; border-radius:8px; font-size:0.8rem; display:none; max-height:200px; overflow-y:auto;">
+                    <strong>Execution Log:</strong>
+                    <pre id="execResultLog" style="white-space:pre-wrap; font-family:monospace; margin-top:6px;"></pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelExecModalBtn">Close</button>
+                    <button type="submit" class="btn-primary" id="startExecBtn">Run Flow</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Connection Accounts Modal -->
+    <div class="modal-overlay" id="connectionAccountsModal" style="z-index:99999;">
+        <div class="modal" style="width: 580px; max-width: 90vw; background: white; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; padding: 0; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);">
+            <div style="padding: 20px 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 id="connModalTitle" style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #0f172a;">Manage Connected Accounts</h3>
+                    <p style="margin: 4px 0 0 0; font-size: 0.75rem; color: #64748b;">Configure separate authenticated accounts.</p>
+
+--- around 660 ---
+        <div class="modal" style="width: 580px; max-width: 90vw; background: white; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; padding: 0; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);">
+            <div style="padding: 20px 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 id="connModalTitle" style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #0f172a;">Manage Connected Accounts</h3>
+                    <p style="margin: 4px 0 0 0; font-size: 0.75rem; color: #64748b;">Configure separate authenticated accounts.</p>
+                </div>
+                <button onclick="closeConnectionAccountsModal()" style="background: none; border: none; font-size: 1.4rem; color: #94a3b8; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <!-- Section 1: Connection Form (Add/Edit) -->
+                <div id="connAccountFormContainer" style="display: none; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+                    <h4 id="connFormTitle" style="margin: 0 0 12px 0; font-size: 0.9rem; font-weight: 600; color: #1e293b;">+ Add Account</h4>
+                    <input type="hidden" id="connFormAccountId">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; display: block;">Connection Name</label>
+                            <input type="text" id="connFormAccountName" placeholder="e.g. My Personal Gmail" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;">
+                        </div>
+                        <div id="connDynamicFields" style="display: flex; flex-direction: column; gap: 12px;">
+                            <!-- App specific fields will be injected here -->
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 4px; align-items: center; justify-content: flex-end;">
+                            <span id="connTestStatus" style="font-size: 0.75rem; font-weight: 600; display: none;"></span>
+                            <button type="button" class="btn-cancel" onclick="testConnAccount()" style="padding: 6px 14px; font-size: 0.8rem; border: 1px solid #6366f1; color: #6366f1; background: none; font-weight:600;">Test Connection</button>
+
+--- around 680 ---
+                            <!-- App specific fields will be injected here -->
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 4px; align-items: center; justify-content: flex-end;">
+                            <span id="connTestStatus" style="font-size: 0.75rem; font-weight: 600; display: none;"></span>
+                            <button type="button" class="btn-cancel" onclick="testConnAccount()" style="padding: 6px 14px; font-size: 0.8rem; border: 1px solid #6366f1; color: #6366f1; background: none; font-weight:600;">Test Connection</button>
+                            <button type="button" class="btn-cancel" onclick="hideConnAccountForm()" style="padding: 6px 14px; font-size: 0.8rem; font-weight:600;">Cancel</button>
+                            <button type="button" class="btn-primary" onclick="saveConnAccount()" style="padding: 6px 14px; font-size: 0.8rem; background: #6366f1; font-weight:600;">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: List of Existing Accounts -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 style="margin: 0; font-size: 0.9rem; font-weight: 600; color: #1e293b;">Connected Accounts</h4>
+                        <button class="btn-primary" onclick="showAddConnAccountForm()" style="padding: 6px 12px; font-size: 0.8rem; background: #10b981;">+ Add Account</button>
+                    </div>
+                    <div id="connAccountsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+                        <!-- JS injected list items -->
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
+                <button class="btn-cancel" onclick="closeConnectionAccountsModal()" style="padding: 8px 16px; font-size: 0.85rem;">Close</button>
+
+--- around 700 ---
+                </div>
+            </div>
+
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
+                <button class="btn-cancel" onclick="closeConnectionAccountsModal()" style="padding: 8px 16px; font-size: 0.85rem;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/project.js"></script>
+<div id="autocompleteDropdown" style="display:none; position:absolute; z-index:9999; background:white; border:1px solid var(--border-color); border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.12); max-height:250px; overflow-y:auto; min-width:200px; padding:4px 0;"></div>
+</body>
+</html>
+
+
+--- around 720 ---

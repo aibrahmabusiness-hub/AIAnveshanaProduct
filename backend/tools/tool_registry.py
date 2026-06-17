@@ -5,6 +5,12 @@ loads only the functions that agent needs.
 """
 
 from tools.outlook_tools import schedule_meeting, get_important_emails
+import sys
+import os
+
+# Ensure the parent directory is in path so we can import pieces
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from pieces import PIECES_REGISTRY, get_piece_action
 
 # Each entry: tool_id -> { "name": display name, "functions": list of callables for Gemini }
 TOOL_REGISTRY = {
@@ -16,16 +22,6 @@ TOOL_REGISTRY = {
     "outlook_email": {
         "name": "Outlook Email",
         "description": "Read and send emails via Microsoft Outlook",
-        "functions": [],
-    },
-    "gmail_read": {
-        "name": "Gmail (Read)",
-        "description": "Read emails from Gmail inbox",
-        "functions": [],
-    },
-    "gmail_send": {
-        "name": "Gmail (Send)",
-        "description": "Send emails via Gmail",
         "functions": [],
     },
     "salesforce_query": {
@@ -56,6 +52,21 @@ TOOL_REGISTRY = {
     "google_search": {
         "name": "Google Web Search",
         "description": "Search the live web for current facts, news, and details keylessly",
+        "functions": [],
+    },
+    "logic_loop": {
+        "name": "Logic Loop",
+        "description": "Iterate over an array of items.",
+        "functions": [],
+    },
+    "logic_if": {
+        "name": "Logic If",
+        "description": "Branching logic.",
+        "functions": [],
+    },
+    "ai_prompt": {
+        "name": "AI Prompt",
+        "description": "Send a dynamic prompt to an LLM to generate text or classify data.",
         "functions": [],
     },
 }
@@ -97,17 +108,34 @@ def tool_google_search(query: str, limit: int = 5) -> str:
 
 # --- Gmail Tool Functions ---
 
-def tool_read_gmail(limit: int = 10) -> str:
+def tool_read_gmail(folder: str = "inbox", status_filter: str = "ALL", sender_email: str = "", days_ago: str = "", limit: int = 10) -> str:
     """
-    Read the most recent emails from the user's Gmail inbox.
+    Read the most recent emails from the user's Gmail.
     Args:
+        folder: Gmail label/folder to search (default 'inbox').
+        status_filter: 'ALL', 'UNSEEN', or 'SEEN'.
+        sender_email: Optional sender email to filter by.
+        days_ago: Optional number of days to search back.
         limit: Maximum number of emails to retrieve (default 10).
     """
     try:
         from tools.gmail_tools import read_gmail_inbox
-        return read_gmail_inbox(limit)
+        return read_gmail_inbox(folder, status_filter, sender_email, days_ago, limit)
     except Exception as e:
         return f"Gmail Error: {str(e)}. Make sure Gmail credentials are configured in Settings."
+
+def tool_mark_gmail_read(message_id: str, folder: str = "inbox") -> str:
+    """
+    Mark an email as read in Gmail.
+    Args:
+        message_id: The IMAP message ID of the email.
+        folder: The folder where the email is located.
+    """
+    try:
+        from tools.gmail_tools import mark_gmail_read
+        return mark_gmail_read(message_id, folder)
+    except Exception as e:
+        return f"Gmail Error: {str(e)}."
 
 def tool_send_gmail(to: str, subject: str, body: str) -> str:
     """
@@ -258,8 +286,6 @@ def tool_jira_add_comment(issue_key: str, comment: str) -> str:
 # Register functions into the registry
 TOOL_REGISTRY["outlook_calendar"]["functions"] = [tool_schedule_meeting]
 TOOL_REGISTRY["outlook_email"]["functions"] = [tool_read_emails]
-TOOL_REGISTRY["gmail_read"]["functions"] = [tool_read_gmail]
-TOOL_REGISTRY["gmail_send"]["functions"] = [tool_send_gmail]
 TOOL_REGISTRY["salesforce_query"]["functions"] = [tool_query_salesforce]
 TOOL_REGISTRY["salesforce_create"]["functions"] = [tool_create_salesforce_record]
 TOOL_REGISTRY["servicenow_incidents"]["functions"] = [tool_servicenow_create_incident, tool_servicenow_get_incidents, tool_servicenow_update_incident]
@@ -267,16 +293,74 @@ TOOL_REGISTRY["servicenow_tables"]["functions"] = [tool_servicenow_query_table]
 TOOL_REGISTRY["jira_issues"]["functions"] = [tool_jira_create_issue, tool_jira_get_issues, tool_jira_add_comment]
 TOOL_REGISTRY["google_search"]["functions"] = [tool_google_search]
 
+def tool_logic_loop(array_var: str = None) -> str:
+    """Pass-through logic loop execution."""
+    return f"Loop configured for variable: {array_var}"
+
+def tool_logic_if(condition: str = None) -> str:
+    """Pass-through logic if execution."""
+    return f"If condition evaluated: {condition}"
+
+def tool_ai_prompt(prompt: str = "") -> str:
+    """Run a dynamic prompt through the Gemini LLM for classification, extraction, or generation."""
+    try:
+        import os
+        import google.generativeai as genai
+        api_key = os.getenv("GEMINI_API_KEY", "")
+        if not api_key:
+            return "Error: GEMINI_API_KEY environment variable is not set."
+            
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        return f"AI Prompt Error: {str(e)}"
+
+TOOL_REGISTRY["logic_loop"]["functions"] = [tool_logic_loop]
+TOOL_REGISTRY["logic_if"]["functions"] = [tool_logic_if]
+TOOL_REGISTRY["ai_prompt"]["functions"] = [tool_ai_prompt]
+
+# --- Inject Modular Pieces into the Registry ---
+for action_id, action_data in PIECES_REGISTRY.items():
+    if action_id not in TOOL_REGISTRY:
+        TOOL_REGISTRY[action_id] = {
+            "name": action_data.get("name", action_id),
+            "description": action_data.get("description", ""),
+            "functions": [action_data.get("callable")]
+        }
 
 def get_tools_for_agent(tool_ids: list) -> list:
     """
     Given a list of tool IDs, returns the combined list of
     Gemini-compatible callable functions.
     """
+    from database import current_connection_id
+    import functools
+
+    def with_connection(func, connection_id):
+        if not connection_id:
+            return func
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            token = current_connection_id.set(connection_id)
+            try:
+                return func(*args, **kwargs)
+            finally:
+                current_connection_id.reset(token)
+        return wrapper
+
     functions = []
-    for tool_id in tool_ids:
-        if tool_id in TOOL_REGISTRY:
-            functions.extend(TOOL_REGISTRY[tool_id]["functions"])
+    for tool_str in tool_ids:
+        tid = tool_str
+        conn_id = None
+        if ":" in tool_str:
+            tid, conn_id = tool_str.split(":", 1)
+            
+        if tid in TOOL_REGISTRY:
+            funcs = TOOL_REGISTRY[tid]["functions"]
+            functions.extend([with_connection(f, conn_id) for f in funcs])
+            
     return functions
 
 

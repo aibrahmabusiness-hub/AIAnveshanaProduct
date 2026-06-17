@@ -1,0 +1,19 @@
+{
+  "name": "lightweight-engine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@activepieces/piece-gmail": "^0.12.4",
+    "@activepieces/piece-slack": "^0.17.1",
+    "@activepieces/pieces-framework": "^0.29.1",
+    "express": "^5.2.1"
+  }
+}

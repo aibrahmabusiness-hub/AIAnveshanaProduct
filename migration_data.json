@@ -1,0 +1,278 @@
+{
+  "summary": {
+    "legacy_framework": "Vanilla HTML/JS",
+    "legacy_styling": "Custom CSS + CSS Variables",
+    "legacy_workflow_lib": "DrawFlow",
+    "react_framework": "React 18 + TypeScript",
+    "react_styling": "Tailwind CSS",
+    "react_workflow_lib": "@xyflow/react (ReactFlow)",
+    "total_legacy_pages": 4,
+    "total_react_pages": 4
+  },
+  "files": {
+    "legacy": {
+      "login.html": {
+        "size_bytes": "~4.2 KB",
+        "fields": [
+          "username",
+          "password"
+        ],
+        "api_endpoint": "POST /api/auth/login",
+        "classes": [
+          "auth-container",
+          "auth-card",
+          "auth-logo",
+          "form-group"
+        ]
+      },
+      "signup.html": {
+        "size_bytes": "~3.8 KB",
+        "fields": [
+          "username",
+          "email",
+          "password"
+        ],
+        "api_endpoint": "POST /api/auth/register",
+        "classes": [
+          "auth-container",
+          "auth-card",
+          "form-group"
+        ]
+      },
+      "index.html": {
+        "size_bytes": "~6.5 KB",
+        "components": [
+          "header",
+          "dashboard-controls",
+          "projects-grid",
+          "create-modal"
+        ],
+        "api_endpoint": "GET /api/agents (implicit)",
+        "features": [
+          "search",
+          "grid/list toggle",
+          "project creation modal"
+        ]
+      },
+      "project.html": {
+        "size_bytes": "59.982 KB",
+        "canvas_elements": 0,
+        "div_elements": 193,
+        "button_elements": 42,
+        "input_elements": 33,
+        "uses_drawflow": true,
+        "key_features": [
+          "agent-workspace",
+          "canvas-container",
+          "node-connections",
+          "guardrails"
+        ]
+      },
+      "style.css": {
+        "size_bytes": "56.767 KB",
+        "color_scheme": "Green-themed (#10b981 primary)",
+        "primary_color": "#10b981",
+        "bg_primary": "#f4fbf7",
+        "border_color": "#d1fae5",
+        "css_variables_count": 29
+      }
+    },
+    "react": {
+      "Login.tsx": {
+        "size_bytes": "~2.1 KB",
+        "fields": [
+          "username",
+          "password"
+        ],
+        "api_endpoint": "POST /api/auth/login",
+        "state_vars": [
+          "username",
+          "password",
+          "errorMsg",
+          "isLoading"
+        ],
+        "uses_hooks": [
+          "useState"
+        ]
+      },
+      "Signup.tsx": {
+        "size_bytes": "~2.3 KB",
+        "fields": [
+          "username",
+          "password"
+        ],
+        "api_endpoint": "POST /api/auth/register",
+        "note": "Email field removed from React version",
+        "state_vars": [
+          "username",
+          "password",
+          "errorMsg",
+          "successMsg",
+          "isLoading"
+        ]
+      },
+      "Dashboard.tsx": {
+        "size_bytes": "~4.5 KB",
+        "api_endpoint": "GET /api/agents",
+        "components": [
+          "header",
+          "project-cards",
+          "loading-state",
+          "empty-state"
+        ],
+        "missing_features": [
+          "project-creation-modal",
+          "search",
+          "view-toggle"
+        ],
+        "responsive_grid": "1 col mobile, 2 col tablet, 3 col desktop"
+      },
+      "Project.tsx": {
+        "size_bytes": "~7.4 KB",
+        "uses_reactflow": true,
+        "api_endpoints": [
+          "GET /api/nodes/schema"
+        ],
+        "websocket": "ws://localhost:8000/ws/logs",
+        "node_types": [
+          "trigger_manual",
+          "trigger_webhook",
+          "action_gmail",
+          "action_slack",
+          "action_jira",
+          "action_salesforce"
+        ],
+        "state_management": "Zustand",
+        "features": [
+          "drag-drop-nodes",
+          "real-time-status",
+          "test-workflow",
+          "publish"
+        ]
+      },
+      "index.css": {
+        "size_bytes": "~3.2 KB",
+        "styling_framework": "Tailwind CSS",
+        "primary_color": "hsl(222.2 47.4% 11.2%) - Navy/Slate",
+        "background": "hsl(0 0% 100%) - White",
+        "supports_dark_mode": true,
+        "theme_colors": 13
+      }
+    }
+  },
+  "differences": {
+    "color_scheme": {
+      "legacy": "Vibrant green theme (#10b981)",
+      "react": "Neutral navy/gray theme",
+      "impact": "Visual redesign - choose one approach for consistency"
+    },
+    "file_sizes": {
+      "legacy_total": "130.3 KB",
+      "react_total": "19.5 KB",
+      "reduction": "85% smaller with modern framework"
+    },
+    "api_endpoints": {
+      "login": "Same",
+      "signup": "Same",
+      "dashboard": "Explicit GET /api/agents (was implicit in legacy)",
+      "project": "Added WebSocket support, schema endpoint"
+    },
+    "form_fields": {
+      "signup_email": "Present in legacy, removed in React"
+    },
+    "features": {
+      "dashboard": {
+        "legacy": [
+          "search",
+          "grid/list toggle",
+          "create project modal",
+          "view control"
+        ],
+        "react": [
+          "basic cards",
+          "responsive grid"
+        ],
+        "missing_in_react": [
+          "search",
+          "view toggle",
+          "create project modal"
+        ]
+      },
+      "project_editor": {
+        "legacy": [
+          "guardrail-config",
+          "multi-agent-workspace",
+          "save-button",
+          "set-default"
+        ],
+        "react": [
+          "drag-drop",
+          "real-time-status",
+          "test-workflow"
+        ],
+        "missing_in_react": [
+          "guardrail-config",
+          "set-default",
+          "multi-agent-support"
+        ]
+      }
+    },
+    "styling": {
+      "legacy": "Custom CSS + CSS variables",
+      "react": "Tailwind CSS utility classes",
+      "advantage_legacy": "More compact color definitions",
+      "advantage_react": "More maintainable, consistent spacing"
+    }
+  },
+  "api_endpoints": {
+    "authentication": {
+      "login": "POST /api/auth/login",
+      "register": "POST /api/auth/register"
+    },
+    "agents": {
+      "list": "GET /api/agents",
+      "schema": "GET /api/nodes/schema"
+    },
+    "realtime": {
+      "logs": "WebSocket ws://localhost:8000/ws/logs"
+    }
+  },
+  "migration_priority": {
+    "p1_blocking": [
+      "Implement project creation modal in Dashboard",
+      "Verify all API endpoints match between legacy and React",
+      "Test WebSocket connection for real-time updates"
+    ],
+    "p2_feature_parity": [
+      "Add email field back to Signup (or confirm removal)",
+      "Implement search and view-toggle in Dashboard",
+      "Add guardrail configuration UI",
+      "Implement Set Default button"
+    ],
+    "p3_polish": [
+      "Align color scheme (keep green theme or embrace neutral)",
+      "Extract shared components (Logo, Modal, Form)",
+      "Add comprehensive error handling",
+      "Performance optimization"
+    ]
+  },
+  "tech_stack": {
+    "legacy": [
+      "HTML5",
+      "Vanilla JavaScript",
+      "DrawFlow",
+      "CSS Variables",
+      "Fetch API"
+    ],
+    "react": [
+      "React 18",
+      "TypeScript",
+      "@xyflow/react",
+      "Zustand",
+      "Tailwind CSS",
+      "React Router",
+      "Fetch API",
+      "WebSocket"
+    ]
+  }
+}

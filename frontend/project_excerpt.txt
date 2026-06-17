@@ -1,0 +1,371 @@
+--- around 1290 ---
+1286:     let vars = [];
+1287:     
+1288:     // Add custom input variables
+1289:     if (workflowVariables && workflowVariables.inputs) {
+1290:         workflowVariables.inputs.forEach(v => {
+1291:             if (v.name) {
+1292:                 vars.push({ step: `Input Variable: ${v.name}`, val: `{{${v.name}}}` });
+1293:             }
+1294:         });
+1295:     }
+
+--- around 1300 ---
+1296:     
+1297:     // Add Drawflow canvas nodes (only ancestor nodes)
+1298:     if (editor) {
+1299:         try {
+1300:             const drawflowData = editor.export();
+1301:             const drawflow = drawflowData.drawflow.Home.data;
+1302:             
+1303:             // Get active node being edited from the properties panel
+1304:             const sidebar = document.getElementById('step-properties-panel');
+1305:             const targetNodeId = sidebar ? sidebar._targetNodeId : null;
+
+--- around 1310 ---
+1306:             
+1307:             let allowedNodeIds = null;
+1308:             if (targetNodeId) {
+1309:                 allowedNodeIds = new Set();
+1310:                 const getAncestors = (nodeId) => {
+1311:                     if (!nodeId || allowedNodeIds.has(nodeId)) return;
+1312:                     allowedNodeIds.add(nodeId);
+1313:                     const node = drawflow[nodeId];
+1314:                     if (node && node.inputs) {
+1315:                         for (const inputKey in node.inputs) {
+
+--- around 1320 ---
+1316:                             const connList = node.inputs[inputKey].connections;
+1317:                             if (connList) {
+1318:                                 connList.forEach(c => getAncestors(c.node));
+1319:                             }
+1320:                         }
+1321:                     }
+1322:                 };
+1323:                 getAncestors(targetNodeId);
+1324:                 // Remove the current node so it cannot reference itself
+1325:                 allowedNodeIds.delete(targetNodeId);
+
+--- around 1330 ---
+1326:             }
+1327:             
+1328:             for (const [id, node] of Object.entries(drawflow)) {
+1329:                 // If we have an active node target, only show variables of allowed ancestors
+1330:                 if (allowedNodeIds && !allowedNodeIds.has(id)) {
+1331:                     continue;
+1332:                 }
+1333:                 
+1334:                 if (node.data && node.data.name) {
+1335:                     const stepName = node.data.name;
+
+--- around 1450 ---
+1446: 
+1447: 
+1448: 
+1449: // ==========================================
+1450: // Drawflow Workflow Engine Implementation
+1451: // ==========================================
+1452: let editor = null;
+1453: let currentFlowId = null;
+1454: let availablePieces = [];
+1455: let workflowVariables = { inputs: [], outputs: [] };
+
+--- around 1460 ---
+1456: let currentVarTab = 'input';
+1457: 
+1458: function initDrawflowEditor() {
+1459:     const drawflowContainer = document.getElementById('drawflow');
+1460:     if (!drawflowContainer) return;
+1461:     
+1462:     drawflowContainer.innerHTML = '';
+1463:     
+1464:     editor = new Drawflow(drawflowContainer);
+1465:     editor.start();
+
+--- around 1470 ---
+1466:     
+1467:     // Bind selection events
+1468:     editor.on('nodeSelected', function(id) {
+1469:         const node = editor.getNodeFromId(id);
+1470:         openStepSettingsInSidebar(id, node);
+1471:     });
+1472:     
+1473:     editor.on('nodeUnselected', function() {
+1474:         clearStepSettingsSidebar();
+1475:     });
+
+--- around 1480 ---
+1476:     
+1477:     // Bind connection validation events
+1478:     editor.on('nodeCreated', () => { setTimeout(window.validateNodeConnections, 50); });
+1479:     editor.on('connectionCreated', () => { setTimeout(window.validateNodeConnections, 50); });
+1480:     editor.on('connectionRemoved', () => { setTimeout(window.validateNodeConnections, 50); });
+1481:     editor.on('nodeRemoved', () => { setTimeout(window.validateNodeConnections, 50); });
+1482:     
+1483:     // Drag-over on container
+1484:     drawflowContainer.addEventListener('dragover', e => {
+1485:         e.preventDefault();
+
+--- around 1500 ---
+1496:         const nodeType = data.split(':')[1];
+1497:         addNodeToCanvas(nodeType, e.clientX, e.clientY);
+1498:         window._draggedFromToolbox = false;
+1499:     });
+1500: 
+1501:     // Delegated click event listener for node deletion (CSP-compliant, capture phase to beat Drawflow)
+1502:     drawflowContainer.addEventListener('mousedown', e => {
+1503:         const deleteBtn = e.target.closest('.node-delete-btn');
+1504:         if (deleteBtn) {
+1505:             e.stopPropagation();
+
+--- around 1510 ---
+1506:             e.preventDefault();
+1507:             const nodeEl = deleteBtn.closest('.drawflow-node');
+1508:             if (nodeEl) {
+1509:                 const id = nodeEl.id.replace('node-', '');
+1510:                 editor.removeNodeId(id);
+1511:                 clearStepSettingsSidebar();
+1512:                 if (window.validateNodeConnections) {
+1513:                     window.validateNodeConnections();
+1514:                 }
+1515:             }
+
+--- around 1520 ---
+1516:         }
+1517:     }, true);
+1518: 
+1519:     // Prevent native drag events from inside the canvas nodes (stops node duplication bugs)
+1520:     drawflowContainer.addEventListener('dragstart', e => {
+1521:         if (e.target.closest('.drawflow-node')) {
+1522:             e.preventDefault();
+1523:         }
+1524:     });
+1525: }
+
+--- around 1530 ---
+1526: 
+1527: window.validateNodeConnections = function() {
+1528:     if (!editor) return;
+1529:     const exportData = editor.export();
+1530:     if (!exportData || !exportData.drawflow || !exportData.drawflow.Home || !exportData.drawflow.Home.data) return;
+1531:     
+1532:     const data = exportData.drawflow.Home.data;
+1533:     
+1534:     Object.keys(data).forEach(nodeId => {
+1535:         const node = data[nodeId];
+
+--- around 1540 ---
+1536:         const nodeType = (node.data && node.data.type) || node.name || '';
+1537:         const isActualTrigger = nodeType.startsWith('trigger_');
+1538:         
+1539:         let hasConnection = false;
+1540:         if (isActualTrigger) {
+1541:             // Triggers must have outputs connected
+1542:             const outputs = node.outputs;
+1543:             for (const key in outputs) {
+1544:                 if (outputs[key].connections && outputs[key].connections.length > 0) {
+1545:                     hasConnection = true;
+
+--- around 1550 ---
+1546:                 }
+1547:             }
+1548:         } else {
+1549:             // Action nodes must have inputs connected
+1550:             const inputs = node.inputs;
+1551:             for (const key in inputs) {
+1552:                 if (inputs[key].connections && inputs[key].connections.length > 0) {
+1553:                     hasConnection = true;
+1554:                 }
+1555:             }
+
+--- around 1900 ---
+1896:                 const selectEl = document.getElementById(selectId);
+1897:                 if (!selectEl) return;
+1898:                 
+1899:                 let optionsHtml = '<option value="">-- Select Connection --</option>';
+1900:                 if (resData.success && resData.connections) {
+1901:                     resData.connections.forEach(conn => {
+1902:                         optionsHtml += `<option value="${conn.id}" ${conn.id === selectedConnId ? 'selected' : ''}>${conn.name} (${conn.username || conn.instance_url || 'Active'})</option>`;
+1903:                     });
+1904:                 }
+1905:                 selectEl.innerHTML = optionsHtml;
+
+--- around 1910 ---
+1906:             })
+1907:             .catch(err => {
+1908:                 console.error("Failed to load connections in sidebar:", err);
+1909:                 const selectEl = document.getElementById(selectId);
+1910:                 if (selectEl) selectEl.innerHTML = '<option value="">Failed to load</option>';
+1911:             });
+1912:     }
+1913: }
+1914: 
+1915: window.onSidebarConnectionChange = function(nodeId, val) {
+
+--- around 1920 ---
+1916:     const node = editor.getNodeFromId(nodeId);
+1917:     if (node) {
+1918:         if (!node.data.config) node.data.config = {};
+1919:         node.data.config.connection_id = val;
+1920:     }
+1921: };
+1922: 
+1923: window.onSidebarNameChange = function(id, name) {
+1924:     const node = editor.getNodeFromId(id);
+1925:     if (node) {
+
+--- around 1930 ---
+1926:         node.data.name = name;
+1927:         const nodeEl = document.getElementById('node-' + id);
+1928:         if (nodeEl) {
+1929:             const nameEl = nodeEl.querySelector('.custom-node-name');
+1930:             if (nameEl) nameEl.textContent = name;
+1931:         }
+1932:     }
+1933: };
+1934: 
+1935: window.onSidebarActionChange = function(id) {
+
+--- around 1940 ---
+1936:     const node = editor.getNodeFromId(id);
+1937:     if (node) {
+1938:         const select = document.getElementById('sidebar-action-select');
+1939:         node.data.action = select.value;
+1940:         node.data.config = {};
+1941:         openStepSettingsInSidebar(id, node);
+1942:     }
+1943: };
+1944: 
+1945: window.updateNodeConfig = function(id) {
+
+--- around 1950 ---
+1946:     const node = editor.getNodeFromId(id);
+1947:     if (node) {
+1948:         if (!node.data.config) node.data.config = {};
+1949:         document.querySelectorAll('.action-prop-input').forEach(input => {
+1950:             const prop = input.dataset.prop;
+1951:             node.data.config[prop] = input.value;
+1952:         });
+1953:     }
+1954: };
+1955: 
+
+--- around 2050 ---
+2046:                 <div style="font-size:0.75rem; font-family:monospace; white-space:pre-wrap; word-break:break-all;">${err.message}</div>
+2047:             `;
+2048:         }
+2049:     });
+2050: };
+2051: 
+2052: window.clearStepSettingsSidebar = function() {
+2053:     const sidebar = document.getElementById('step-properties-panel');
+2054:     if (sidebar) {
+2055:         sidebar.innerHTML = '<div style="text-align:center; color:#94a3b8; font-size:0.85rem; padding-top:40px;">Select a step to configure its properties.</div>';
+
+--- around 2060 ---
+2056:         sidebar._targetNodeId = null;
+2057:     }
+2058: };
+2059: 
+2060: function convertDrawflowToStepsArray(drawflowData) {
+2061:     const steps = [];
+2062:     const drawflow = drawflowData.drawflow.Home.data;
+2063:     
+2064:     // Find trigger node
+2065:     let currentNodeId = null;
+
+--- around 2070 ---
+2066:     for (const [id, node] of Object.entries(drawflow)) {
+2067:         if (node.name.startsWith('trigger_')) {
+2068:             currentNodeId = id;
+2069:             steps.push({
+2070:                 id: node.data.name.toLowerCase().replace(/[^a-z0-9_]/g, '_'),
+2071:                 type: node.name,
+2072:                 data: node.data.config || {},
+2073:                 drawflowId: id
+2074:             });
+2075:             break;
+
+--- around 2080 ---
+2076:         }
+2077:     }
+2078:     
+2079:     if (!currentNodeId) {
+2080:         for (const [id, node] of Object.entries(drawflow)) {
+2081:             if (node.inputs.input_1 && node.inputs.input_1.connections.length === 0) {
+2082:                 currentNodeId = id;
+2083:                 steps.push({
+2084:                     id: node.data.name.toLowerCase().replace(/[^a-z0-9_]/g, '_'),
+2085:                     type: node.name,
+
+--- around 2090 ---
+2086:                     data: node.data.config || {},
+2087:                     drawflowId: id
+2088:                 });
+2089:                 break;
+2090:             }
+2091:         }
+2092:     }
+2093:     
+2094:     let visited = new Set();
+2095:     while (currentNodeId && !visited.has(currentNodeId)) {
+
+--- around 2100 ---
+2096:         visited.add(currentNodeId);
+2097:         const node = drawflow[currentNodeId];
+2098:         const outputs = node.outputs.output_1;
+2099:         if (!outputs || !outputs.connections || outputs.connections.length === 0) {
+2100:             break;
+2101:         }
+2102:         
+2103:         const nextConn = outputs.connections[0];
+2104:         const nextNodeId = nextConn.node;
+2105:         
+
+--- around 2700 ---
+2696:                     <input type="text" class="variable-expression-input" value="${v.value || ''}" placeholder="e.g. {{gmail_read_mail.body}}" onchange="updateVariableField('outputs', ${idx}, 'value', this.value)" style="padding:8px; border:1px solid #e2e8f0; border-radius:6px; font-size:0.85rem; outline:none; font-family:inherit;">
+2697:                     <button onclick="deleteVariable('outputs', ${idx})" style="background:none; border:none; color:#ef4444; font-size:1.4rem; cursor:pointer; display:flex; justify-content:center; align-items:center;">&times;</button>
+2698:                 </div>
+2699:             `).join('') + `</div>`;
+2700:         }
+2701:     }
+2702:     body.innerHTML = html;
+2703: }
+2704: 
+2705: 
+
+--- around 2710 ---
+2706: // ============================================================
+2707: //  CONNECTED APPS WIDGET & ACCOUNTS MODAL
+2708: // ============================================================
+2709: let currentConnAppName = '';
+2710: 
+2711: async function loadConnectedAppsWidget() {
+2712:     const listEl = document.getElementById('connectedAppsWidgetList');
+2713:     if (!listEl) return;
+2714:     
+2715:     listEl.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#94a3b8;"><div style="width:20px;height:20px;border:2px solid #e2e8f0;border-top-color:#6366f1;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div></div>`;
+
+--- around 2720 ---
+2716:     
+2717:     const apps = [
+2718:         { key: 'gmail', name: 'Gmail', icon: '✉️', color: 'linear-gradient(135deg, #f87171, #ef4444)' },
+2719:         { key: 'jira', name: 'Jira', icon: '💎', color: 'linear-gradient(135deg, #60a5fa, #3b82f6)' },
+2720:         { key: 'servicenow', name: 'ServiceNow', icon: '⚡', color: 'linear-gradient(135deg, #34d399, #059669)' },
+2721:         { key: 'salesforce', name: 'Salesforce', icon: '☁️', color: 'linear-gradient(135deg, #38bdf8, #0ea5e9)' }
+2722:     ];
+2723:     
+2724:     try {
+2725:         let html = '';
+
+--- around 2730 ---
+2726:         for (const app of apps) {
+2727:             const res = await authFetch(`/api/credentials/${app.key}/accounts`);
+2728:             const data = await res.json();
+2729:             const count = (data.success && data.connections) ? data.connections.length : 0;
+2730:             
+2731:             const countBadge = count > 0 
+2732:                 ? `<span style="position:absolute; top:-6px; right:-6px; background:#ef4444; color:white; font-size:0.7rem; font-weight:700; border-radius:10px; padding:2px 6px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">${count}</span>`
+2733:                 : '';
+2734:                 
+2735:             html += `

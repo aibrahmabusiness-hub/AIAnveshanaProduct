@@ -1,0 +1,27 @@
+========================================
+AGENT AI - QUICK START
+========================================
+
+3 SIMPLE STEPS:
+
+1. BUILD FRONTEND
+   cd "c:\Users\Admin\Documents\Agentic AI\v2\frontend"
+   npm install
+   npm run build
+
+2. INSTALL BACKEND
+   cd "c:\Users\Admin\Documents\Agentic AI\v2\backend"
+   pip install -r requirements.txt
+
+3. START SERVER
+   cd "c:\Users\Admin\Documents\Agentic AI\v2\backend"
+   python -m uvicorn main_simple:app --reload --port 8000
+
+4. OPEN BROWSER
+   http://localhost:8000/
+
+LOGIN TEST:
+   Username: test
+   Password: test123
+
+READY TO GO!

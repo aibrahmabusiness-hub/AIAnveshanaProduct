@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/config.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ai Anveshana Platform - Workspace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.js"></script>
+    <script>
+        // Authentication check
+        if (!localStorage.getItem('token')) {
+            window.location.href = '/login';
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <header class="top-header">
+        <div class="logo" style="display:flex; align-items:center;">
+            <a href="/" style="display:flex; align-items:center; text-decoration:none;">
+                <svg viewBox="0 0 100 100" class="logo-img" style="height: 35px; width: 35px;"><rect x="0" y="35" width="100" height="30" rx="15" class="logo-rect" transform="rotate(45 50 50)" /><circle cx="22" cy="78" r="20" class="logo-circle" /><circle cx="78" cy="22" r="20" class="logo-circle" /></svg>
+                <span class="logo-text" style="font-weight:700; margin-left:8px; font-size:1.25rem;">Ai <span class="highlight">Anveshana</span></span>
+            </a>
+            <span style="color:var(--border-color); margin:0 12px; font-size:1.2rem;">/</span>
+            <span class="brand-title" id="sidebarTitle" style="font-weight:600; color:var(--text-secondary); font-size:0.95rem;">Loading...</span>
+        </div>
+        <div class="header-right" style="gap:12px; display:flex; align-items:center;">
+            <button id="saveAgentBtn" class="orange-btn" style="padding: 6px 16px; font-size: 0.8rem; border-radius: 6px; display:none;">Save</button>
+            <button id="defaultAgentBtn" class="btn-cancel" style="padding: 6px 16px; font-size: 0.8rem; border-radius: 6px; font-weight:600;">Set as Default</button>
+            <a href="/" class="back-link" style="margin-left:10px; font-weight:600; text-decoration:none; font-size:0.85rem; color:var(--text-secondary);">← Dashboard</a>
+            <div class="profile-container">
+                <div class="profile-avatar" id="userAvatar" style="cursor:pointer;">A</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-dropdown-header">
+                        <div class="profile-dropdown-username" id="dropdownUsername">admin</div>
+                        <div class="profile-dropdown-role">Platform Admin</div>
+                    </div>
+                    <a href="/" class="profile-dropdown-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        Dashboard
+                    </a>
+                    <button class="profile-dropdown-item" id="dropdownLogoutBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Log Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="workspace-layout">
+        <!-- Left Sidebar -->
+        <nav class="ws-sidebar">
+
+            <div class="ws-nav-item active" data-view="chat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Chat
+            </div>
+            <div class="ws-nav-item" data-view="agents">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Agents
+            </div>
+            <div class="ws-nav-item" data-view="tools">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                Tools
+            </div>
+            <div class="ws-nav-item" data-view="knowledge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                Knowledge Base
+            </div>
+                        <div class="ws-nav-item" data-view="connections">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                Connections
+            </div>
+            <div class="ws-nav-item" data-view="workflows">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                Workflows
+            </div>
+            <div class="ws-nav-item" data-view="runs">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Runs
+            </div>
+            <div class="ws-nav-item" data-view="settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Settings
+            </div>
+        </nav>
+
+        <!-- Middle: Chat History -->
+        <aside class="ws-history" id="historyPanel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <div class="ws-history-header" style="margin-bottom:0;">Chat Threads</div>
+                <button class="btn-primary" id="newThreadBtn" style="padding:4px 8px; font-size:0.75rem; border-radius:4px;">+ New</button>
+            </div>
+            <div id="historyList" style="display:flex; flex-direction:column; gap:6px;">
+                <div style="color:var(--text-muted); font-size:0.85rem; padding:12px 0;">No threads yet. Click "+ New" to start a chat.</div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="ws-main">
+            <!-- Chat View -->
+            <div class="ws-view active" id="view-chat">
+                <div class="ws-chat-container" id="chatContainer">
+                    <h1 class="ws-greeting" id="greetingText">What can I help you with?</h1>
+                    <div id="chatMessages"></div>
+                    <div class="ws-input-box">
+                        <input type="text" id="promptInput" placeholder="Ask Anything..." autofocus>
+                        <div class="ws-input-actions">
+                            <div class="ws-input-tools">
+                                <div class="tool-pill" id="connectedToolsBadge">No tools</div>
+                            </div>
+                            <button class="send-btn" id="sendBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resizer Handle -->
+            <div class="resize-handle" id="resizeHandle"></div>
+
+            <!-- Agents View -->
+            <div class="ws-view" id="view-agents">
+                <div class="agents-workspace">
+                    <div class="agents-inner-sidebar">
+                        <div class="agents-sub-item active" data-agent-tab="general">General</div>
+                        <div class="agents-sub-item" data-agent-tab="integrations">Integrations</div>
+                        <div class="agents-sub-item" data-agent-tab="mcp">MCP</div>
+                    </div>
+                    
+                    <div class="agents-content">
+                        <!-- General View -->
+                        <div class="agent-tab-view" id="agent-tab-general" style="display:block;">
+                            <div style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px;">
+                                <!-- Left side -->
+                                <div style="display:flex; flex-direction:column; gap:16px;">
+                                    <div class="form-group">
+                                        <label style="font-weight:600;">Agent Name</label>
+                                        <input type="text" id="agentNameInput" style="padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit; width:100%;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="font-weight:600;">Agent Description</label>
+                                        <input type="text" id="agentDescInput" style="padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit; width:100%;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="font-weight:600;">Model</label>
+                                        <select id="agentModelSelect" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit;">
+                                            <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+                                            <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+                                            <option value="gpt-4o">gpt-4o</option>
+                                            <option value="gpt-4o-mini">gpt-4o-mini</option>
+                                            <option value="claude-3-5-sonnet-20241022">claude-3-5-sonnet-20241022</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="font-weight:600;">Personality Prompt</label>
+                                        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">Define system instruction for the agent's behavior.</p>
+                                        <textarea id="personalityPromptInput" rows="8" style="width:100%; padding:12px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit; resize:vertical;"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right side -->
+                                <div style="display:flex; flex-direction:column; gap:20px;">
+                                    <div class="form-group">
+                                        <label style="font-weight:600;">Response Format</label>
+                                        <select style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit;">
+                                            <option>Normal</option>
+                                            <option>JSON Object</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="font-weight:600;">Max Tool Calls</label>
+                                        <input type="number" id="maxToolCallsInput" value="80" style="padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit;">
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Maximum tool invocations before returning response.</p>
+                                    </div>
+                                    <div style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: white; display: flex; flex-direction: column; gap: 12px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <strong style="font-size:0.85rem; display:block;">Agent Guardrails</strong>
+                                                <span style="font-size:0.7rem; color:var(--text-muted);">Enforce safety filters on model inputs/outputs</span>
+                                            </div>
+                                            <input type="checkbox" id="guardrailsToggle" checked style="accent-color:var(--orange-primary); width:20px; height:20px; cursor:pointer;">
+                                        </div>
+                                        <div id="guardrailOptionsContainer" style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 4px;">
+                                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 500;">
+                                                <input type="checkbox" class="guardrail-type-checkbox" value="political" style="accent-color: var(--orange-primary); width: 14px; height: 14px;">
+                                                <div>
+                                                    <span style="display:block; font-weight: 600;">Political Guardrails</span>
+                                                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;">Blocks political bias or candidate profiling</span>
+                                                </div>
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 500;">
+                                                <input type="checkbox" class="guardrail-type-checkbox" value="personal" style="accent-color: var(--orange-primary); width: 14px; height: 14px;">
+                                                <div>
+                                                    <span style="display:block; font-weight: 600;">Personal & Offensive Language</span>
+                                                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;">Blocks personal attacks, insults, or harassment</span>
+                                                </div>
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 500;">
+                                                <input type="checkbox" class="guardrail-type-checkbox" value="threatening" style="accent-color: var(--orange-primary); width: 14px; height: 14px;">
+                                                <div>
+                                                    <span style="display:block; font-weight: 600;">Threatening & Violence Prevention</span>
+                                                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;">Blocks violent requests, self-harm, or hate speech</span>
+                                                </div>
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 500;">
+                                                <input type="checkbox" class="guardrail-type-checkbox" value="pii_secrets" style="accent-color: var(--orange-primary); width: 14px; height: 14px;">
+                                                <div>
+                                                    <span style="display:block; font-weight: 600;">PII & secrets leakage prevention</span>
+                                                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;">Blocks/masks credentials, API keys, or private data</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group slider-container">
+                                        <label style="font-weight:600; display:flex; justify-content:space-between;">
+                                            <span>Creativity</span>
+                                            <span id="creativityValue" style="color:var(--orange-primary); font-weight:700;">0.5</span>
+                                        </label>
+                                        <input type="range" id="creativitySlider" min="0" max="1" step="0.1" value="0.5" style="width:100%; accent-color:var(--orange-primary);">
+                                        <div class="slider-labels">
+                                            <span>Precise</span>
+                                            <span>Creative</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="border:1px solid var(--border-color); border-radius:10px; padding:20px; text-align:left; background:white;">
+                                        <strong style="font-size:0.85rem; display:block; margin-bottom:8px; text-align:center;">Attached Tools & Capabilities</strong>
+                                        <div id="agentAttachedTools" style="color:var(--text-muted); font-size:0.8rem; padding:10px 0;">
+                                            <div style="text-align:center;">No tools or capabilities attached.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Toolkits View -->
+                        <div class="agent-tab-view" id="agent-tab-toolkits" style="display:none;">
+                            <h3>Toolkits</h3>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">Attach preset collections of tools for this agent.</p>
+                            <div id="toolkitsList" style="display:flex; flex-direction:column; gap:10px;">
+                                <div style="background:white; padding:16px; border:1px solid var(--border-color); border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                                    <div><strong>Email Communications (Gmail & Outlook)</strong><span style="font-size:0.75rem; color:var(--text-muted); display:block;">Read, send, and check inbox messages.</span></div>
+                                    <button class="orange-btn" style="padding:6px 12px; font-size:0.75rem;">Connected</button>
+                                </div>
+                                <div style="background:white; padding:16px; border:1px solid var(--border-color); border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                                    <div><strong>CRM System (Salesforce)</strong><span style="font-size:0.75rem; color:var(--text-muted); display:block;">Query accounts and create leads.</span></div>
+                                    <button class="btn-cancel" style="padding:6px 12px; font-size:0.75rem;">Link Toolkit</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tools View -->
+                        <div class="agent-tab-view" id="agent-tab-tools" style="display:none;">
+                            <h3>Connected API Tools</h3>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">Manage standalone model tools.</p>
+                            <div id="agentInnerToolsList"></div>
+                        </div>
+
+                        <!-- MCP View -->
+                        <div class="agent-tab-view" id="agent-tab-mcp" style="display:none;">
+                            <h3>Model Context Protocol (MCP) Servers</h3>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">Connect external MCP servers to inject dynamic context / tools.</p>
+                            <div style="border:1px dashed var(--border-color); padding:30px; text-align:center; border-radius:8px; background:white;">
+                                No MCP servers connected.
+                            </div>
+                        </div>
+
+                        <!-- Integrations View -->
+                        <div class="agent-tab-view" id="agent-tab-integrations" style="display:none;">
+                            <h3>Agent Integrations</h3>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">Manage third-party connections and enable individual capabilities for this agent.</p>
+                            <div id="agentIntegrationsList" style="display:flex; flex-direction:column; gap:16px;"></div>
+                        </div>
+
+                        <!-- Prompts View -->
+                        <div class="agent-tab-view" id="agent-tab-prompts" style="display:none;">
+                            <h3>Prompt Configuration</h3>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">Configure System instructions and user instructions formatting.</p>
+                            
+                            <div style="display:flex; flex-direction:column; gap:20px;">
+                                <div class="form-group">
+                                    <label style="font-weight:600;">System Prompt (Instruction)</label>
+                                    <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">Main behavioral system instructions for the LLM.</p>
+                                    <textarea id="systemPromptConfigInput" rows="6" style="width:100%; padding:12px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit; resize:vertical;"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-weight:600;">User Prompt (Format Template)</label>
+                                    <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">Surround or prefix the user's message with templates. Use <code>{{query}}</code> to place the user's raw question.</p>
+                                    <textarea id="userPromptConfigInput" rows="6" placeholder="You are evaluating a customer issue. Follow these guidelines...\n\nUser Question: {{query}}" style="width:100%; padding:12px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit; resize:vertical;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tests View -->
+                        <div class="agent-tab-view" id="agent-tab-tests" style="display:none;">
+                            <h3>Agent Live Preview (Tests)</h3>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">Run quick trial queries to preview prompt templates and responses before deploying.</p>
+                            
+                            <div style="display:flex; flex-direction:column; gap:16px; background:white; padding:20px; border:1px solid var(--border-color); border-radius:8px;">
+                                <div class="form-group">
+                                    <label style="font-weight:600;">Test Query</label>
+                                    <input type="text" id="testQueryInput" placeholder="Enter test query..." style="padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit;">
+                                </div>
+                                <button type="button" id="runTestBtn" class="orange-btn" style="align-self:flex-start;">Execute Test</button>
+                                
+                                <div id="testOutputPanel" style="margin-top:16px; display:none; flex-direction:column; gap:12px;">
+                                    <div>
+                                        <strong>Resolved Prompt Preview:</strong>
+                                        <pre id="testResolvedPrompt" style="background:#f3f4f6; padding:10px; border-radius:6px; font-family:monospace; font-size:0.75rem; white-space:pre-wrap; max-height:150px; overflow-y:auto; margin-top:4px;"></pre>
+                                    </div>
+                                    <div>
+                                        <strong>Agent Response:</strong>
+                                        <pre id="testAgentReply" style="background:#fff7ed; border:1px solid #ffedd5; padding:12px; border-radius:6px; font-family:inherit; font-size:0.85rem; white-space:pre-wrap; margin-top:4px;"></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools View -->
+            <div class="ws-view" id="view-tools">
+                <div class="ws-panel">
+                    <h2>Connected Tools</h2>
+                    <p style="color:var(--text-muted); margin-bottom:20px;">Select which tools this agent can use.</p>
+                    <div id="toolsList"></div>
+                    <button class="btn-primary" id="saveToolsBtn" style="margin-top:20px;">Save Tools</button>
+                </div>
+            </div>
+
+            <!-- Knowledge Base View -->
+            <div class="ws-view" id="view-knowledge">
+                <div class="ws-panel">
+                    <h2>Knowledge Base (Vector RAG)</h2>
+                    <p style="color:var(--text-muted); margin-bottom:20px;">Upload documents for this agent to reference using ChromaDB semantic search.</p>
+                    <div style="border:2px dashed var(--border-color); border-radius:12px; padding:40px; text-align:center; margin-bottom:20px;">
+                        <input type="file" id="kbFileInput" accept=".txt,.md,.csv" style="display:none;">
+                        <button class="btn-primary" onclick="document.getElementById('kbFileInput').click()">Upload Document</button>
+                        <p style="color:var(--text-muted); font-size:0.85rem; margin-top:8px;">Supports .txt, .md, .csv files</p>
+                    </div>
+                    <div id="kbDocsList"></div>
+                </div>
+            </div>
+
+                        <!-- Connections View -->
+            <div class="ws-view" id="view-connections" style="display:none;">
+                <div class="ws-panel" style="max-width:800px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <div>
+                            <h2>App Connections</h2>
+                            <p style="color:var(--text-muted);">Manage authentication and credentials for external services.</p>
+                        </div>
+                        <button class="btn-primary" onclick="openNewConnectionModal()">+ New Connection</button>
+                    </div>
+                    <div id="connectionsList" style="display:flex; flex-direction:column; gap:16px;">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflows View -->
+            <div class="ws-view" id="view-workflows">
+                <div style="display: flex; gap: 24px; max-width: 1200px; margin: 0 auto; align-items: flex-start; width: 100%;">
+                    
+                    <!-- Left Column: Automated Workflows List -->
+                    <div class="ws-panel" style="flex: 2; margin-bottom: 0;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                            <div>
+                                <h2>Automated Workflows</h2>
+                                <p style="color:var(--text-muted);">Define multi-step sequences for tools connection.</p>
+                            </div>
+                            <button class="btn-primary" id="createNewWorkflowBtn">+ Create Workflow</button>
+                        </div>
+                        <div id="workflowsList" style="display:flex; flex-direction:column; gap:16px;">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Connected Apps Widget -->
+                    <div class="ws-panel" style="flex: 1; min-width: 320px; margin-bottom: 0; padding: 24px; background: white; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);">
+                        <div style="margin-bottom:16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+                            <h2 style="font-size: 1.1rem; font-weight:700; color:#0f172a; margin: 0 0 4px 0;">Connected Apps</h2>
+                            <p style="color:var(--text-muted); font-size:0.75rem; margin: 0;">View active accounts for each platform</p>
+                        </div>
+                        <div id="connectedAppsWidgetList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 16px; margin-top: 10px;">
+                            <!-- Populated dynamically with app logos -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>            <!-- Settings View -->
+            <div class="ws-view" id="view-settings">
+                <div class="ws-panel" style="max-width:850px;">
+                    <h2>Workspace Settings</h2>
+                    <p style="color:var(--text-muted); margin-bottom:20px;">Configure LLM providers and tool credentials.</p>
+
+                    <div class="settings-blocks-grid">
+                        <div class="settings-block-card active" data-settings-target="llm">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                            <span>LLM Settings</span>
+                        </div>
+                        <div class="settings-block-card" data-settings-target="servicenow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                            <span>ServiceNow</span>
+                            <span class="conn-badge" id="badge-servicenow" style="font-size:0.7rem; color:var(--text-muted); font-weight:500;">Disconnected</span>
+                        </div>
+                        <div class="settings-block-card" data-settings-target="gmail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <span>Gmail</span>
+                            <span class="conn-badge" id="badge-gmail" style="font-size:0.7rem; color:var(--text-muted); font-weight:500;">Disconnected</span>
+                        </div>
+                        <div class="settings-block-card" data-settings-target="salesforce">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+                            <span>Salesforce</span>
+                            <span class="conn-badge" id="badge-salesforce" style="font-size:0.7rem; color:var(--text-muted); font-weight:500;">Disconnected</span>
+                        </div>
+                        <div class="settings-block-card" data-settings-target="jira">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+                            <span>Jira</span>
+                            <span class="conn-badge" id="badge-jira" style="font-size:0.7rem; color:var(--text-muted); font-weight:500;">Disconnected</span>
+                        </div>
+                    </div>
+
+                    <!-- Panel 1: LLM Settings -->
+                    <div class="settings-config-panel active" id="settings-panel-llm">
+                        <div class="settings-section">
+                            <h3>Agent LLM Routing</h3>
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Select the model this specific agent uses. Defaults to standard Gemini if none selected.</p>
+                            <div class="form-group" style="display:flex; gap:10px; align-items:center; margin-bottom:0;">
+                                <select id="agentLlmSelect" style="flex:1; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit;">
+                                    <option value="">Default System Gemini</option>
+                                </select>
+                                <button class="btn-primary" id="saveAgentLlmBtn">Apply</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-section" style="margin-top:24px;">
+                            <h3>LLM Key Safe (Secure DB Storage)</h3>
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Add custom keys encrypted with AES-256 Fernet.</p>
+                            <form id="addLlmConfigForm" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label>Provider</label>
+                                        <select id="llmProvider" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-family:inherit;">
+                                            <option value="gemini">Google Gemini</option>
+                                            <option value="openai">OpenAI</option>
+                                            <option value="anthropic">Anthropic</option>
+                                            <option value="mistral">Mistral AI</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label>Model Name</label>
+                                        <input type="text" id="llmModel" required placeholder="e.g. gemini-2.5-pro, gpt-4o, mistral-large-latest">
+                                    </div>
+                                 </div>
+                                 <div class="form-group" style="margin-bottom:0;">
+                                     <label>API Key</label>
+                                     <input type="password" id="llmKey" required placeholder="Enter secret API key">
+                                 </div>
+                                 <div style="display:flex; gap:10px;">
+                                     <button type="submit" class="btn-primary">Add Key</button>
+                                     <button type="button" id="testLlmConnBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                                 </div>
+                                 <div id="llmTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; display:none;"></div>
+                             </form>
+                             <div id="llmConfigsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Panel 2: ServiceNow -->
+                    <div class="settings-config-panel" id="settings-panel-servicenow">
+                        <h3>ServiceNow Credentials</h3>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure ServiceNow Table & Incident API connection.</p>
+                        <div class="form-group"><label>Instance URL</label><input type="text" id="snUrl" placeholder="https://your-instance.service-now.com"></div>
+                        <div class="form-group"><label>Client ID</label><input type="text" id="snClientId" placeholder="OAuth Client ID"></div>
+                        <div class="form-group"><label>Client Secret</label><input type="password" id="snClientSecret" placeholder="OAuth Client Secret"></div>
+                        <div class="form-group"><label>Username</label><input type="text" id="snUser" placeholder="username"></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="snPass" placeholder="password"></div>
+                        <div style="display:flex; gap:10px; margin-top:16px;">
+                            <button class="btn-primary" id="saveSnCreds">Save Credentials</button>
+                            <button type="button" id="testSnCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                        </div>
+                        <div id="snTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
+                    </div>
+
+                    <!-- Panel 3: Gmail -->
+                    <div class="settings-config-panel" id="settings-panel-gmail">
+                        <h3>Gmail Credentials</h3>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure standard Gmail App Password/Token integration.</p>
+                        <div class="form-group"><label>Gmail Username / Email</label><input type="text" id="gmUser" placeholder="user@gmail.com"></div>
+                        <div class="form-group"><label>App Password / Token</label><input type="password" id="gmToken" placeholder="Enter App Password / Token"></div>
+                        <div style="display:flex; gap:10px; margin-top:16px;">
+                            <button class="btn-primary" id="saveGmCreds">Save Credentials</button>
+                            <button type="button" id="testGmCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                        </div>
+                        <div id="gmTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
+                    </div>
+
+                    <!-- Panel 4: Salesforce -->
+                    <div class="settings-config-panel" id="settings-panel-salesforce">
+                        <h3>Salesforce Credentials</h3>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure Salesforce CRM connection via simple-salesforce.</p>
+                        <div class="form-group"><label>Instance URL</label><input type="text" id="sfUrl" placeholder="https://your-instance.salesforce.com"></div>
+                        <div class="form-group"><label>Username</label><input type="text" id="sfUser" placeholder="user@company.com"></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="sfPass" placeholder="password"></div>
+                        <div class="form-group"><label>Security Token</label><input type="text" id="sfToken" placeholder="security token"></div>
+                        <div style="display:flex; gap:10px; margin-top:16px;">
+                            <button class="btn-primary" id="saveSfCreds">Save Credentials</button>
+                            <button type="button" id="testSfCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                        </div>
+                        <div id="sfTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
+                    </div>
+
+                    <!-- Panel 5: Jira -->
+                    <div class="settings-config-panel" id="settings-panel-jira">
+                        <h3>Jira Credentials</h3>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Configure Jira Cloud connection via basic email token.</p>
+                        <div class="form-group"><label>Jira Instance URL</label><input type="text" id="jrUrl" placeholder="https://your-domain.atlassian.net"></div>
+                        <div class="form-group"><label>Email / Username</label><input type="text" id="jrUser" placeholder="user@atlassian.com"></div>
+                        <div class="form-group"><label>API Token</label><input type="password" id="jrToken" placeholder="Enter Jira API Token"></div>
+                        <div style="display:flex; gap:10px; margin-top:16px;">
+                            <button class="btn-primary" id="saveJrCreds">Save Credentials</button>
+                            <button type="button" id="testJrCredsBtn" class="btn-cancel" style="border: 1px solid var(--orange-primary); color: var(--orange-primary); background: none; font-weight:600;">Test Connection</button>
+                        </div>
+                        <div id="jrTestStatus" style="font-size:0.85rem; padding:8px; border-radius:6px; margin-top:12px; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom Canvas Workflow Editor Modal -->
+    <div class="modal-overlay" id="workflowModal" style="z-index:9999;">
+        <div class="modal workflow-canvas-modal" style="width:95vw; height:90vh; max-width:1400px; padding:0; display:flex; flex-direction:column; background:#f8fafc; border-radius:12px; overflow:hidden;">
+            <!-- Header -->
+            <div class="editor-header" style="padding:16px 24px; background:#fff; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between;">
+                <div style="flex:1;">
+                    <input type="text" id="workflowName" placeholder="Untitled Workflow" style="font-size:1.25rem; font-weight:700; background:transparent; border:none; color:#0f172a; outline:none; width:100%;">
+                </div>
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <select id="workflowStatus" style="padding:8px 12px; border:1px solid #e2e8f0; border-radius:8px; outline:none;">
+                        <option value="draft">Draft</option>
+                        <option value="active">Active</option>
+                    </select>
+                    <button class="btn" style="padding:8px 16px; border:1px solid #e2e8f0; border-radius:8px; background:#fff; cursor:pointer;" id="cancelWorkflowModalBtn" onclick="closeWorkflowEditor()">Cancel</button>
+                    <button class="btn" style="padding:8px 16px; background:#f1f5f9; color:#334155; border:1px solid #e2e8f0; border-radius:8px; font-weight:600; cursor:pointer;" id="openVarsPanelBtn" onclick="openVariablesPanel()">{x} Variables</button>
+                    <button class="btn" style="padding:8px 16px; background:#6366f1; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer;" id="saveWorkflowBtn" onclick="saveWorkflow()">Save Workflow</button>
+                    <button class="btn" style="padding:8px 16px; background:#22c55e; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer;" id="executeWorkflowBtn" onclick="executeWorkflow()">&#9654; Run Workflow</button>
+                </div>
+            </div>
+
+            <!-- Canvas Workspace -->
+            <div style="display:flex; flex:1; overflow:hidden;">
+                
+                <!-- Left Sidebar: Toolbox (Dynamically populated from Activepieces) -->
+                <div style="width:300px; background:#fff; border-right:1px solid #e2e8f0; display:flex; flex-direction:column; overflow-y:auto; flex-shrink:0;">
+                    <div style="padding:16px; border-bottom:1px solid #f1f5f9;">
+                        <h3 style="margin:0; font-size:1rem; font-weight:700; color:#0f172a;">Apps & Pieces</h3>
+                        <p style="margin:4px 0 0 0; font-size:0.75rem; color:#64748b;">Click to add to your flow</p>
+                        <input type="text" id="pieceSearch" placeholder="Search apps..." style="width:100%; padding:8px; margin-top:12px; border:1px solid #e2e8f0; border-radius:6px; font-size:0.85rem;" oninput="filterPieces(this.value)">
+                    </div>
+                    <div id="dynamic-toolbox" style="padding:16px; display:flex; flex-direction:column; gap:10px;">
+                        <div style="text-align:center; color:#94a3b8; font-size:0.85rem; padding:20px;">
+                            <div style="width:24px; height:24px; border:2px solid #e2e8f0; border-top-color:#6366f1; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 10px;"></div>
+                            Loading Apps...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center: Drawflow Canvas -->
+                <div class="canvas-container" style="flex:1; background:#f8fafc; position:relative; overflow:hidden; padding:0;">
+                    <div id="drawflow" style="width:100%; height:100%;"></div>
+                </div>
+
+                <!-- Right Sidebar: Properties Configuration -->
+                <div style="width:360px; background:#fff; border-left:1px solid #e2e8f0; display:flex; flex-direction:column; flex-shrink:0;">
+                    <div style="padding:16px; border-bottom:1px solid #f1f5f9;">
+                        <h3 style="margin:0; font-size:1rem; font-weight:700; color:#0f172a;">Step Configuration</h3>
+                    </div>
+                    <div id="step-properties-panel" style="padding:20px; overflow-y:auto; flex:1;">
+                        <div style="text-align:center; color:#94a3b8; font-size:0.85rem; padding-top:40px;">Select a step to configure its properties.</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Variables Manager Modal -->
+    <div id="variablesPanelModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:16px; width:780px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 25px 50px rgba(0,0,0,0.25); overflow:hidden;">
+            <!-- Modal Header -->
+            <div style="padding:20px 24px; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; background:#fff;">
+                <div>
+                    <h2 style="margin:0; font-size:1.15rem; font-weight:700; color:#0f172a;">{x} Workflow Variables</h2>
+                    <p style="margin:4px 0 0; font-size:0.78rem; color:#64748b;">Define workflow inputs and outputs with types. Use <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">{{variable_name}}</code> in node fields to inject values at runtime.</p>
+                </div>
+                <button onclick="closeVariablesPanel()" style="background:none;border:none;font-size:1.4rem;color:#94a3b8;cursor:pointer;line-height:1;">&times;</button>
+            </div>
+
+            <!-- Tab Bar: Inputs / Outputs -->
+            <div style="display:flex; border-bottom:1px solid #e2e8f0; background:#f8fafc;">
+                <button id="varTab-input" onclick="switchVarTab('input')" style="flex:1; padding:12px; border:none; border-bottom:3px solid #6366f1; background:transparent; font-weight:700; color:#4f46e5; cursor:pointer; font-size:0.85rem;">&#8594; INPUT Arguments</button>
+                <button id="varTab-output" onclick="switchVarTab('output')" style="flex:1; padding:12px; border:none; border-bottom:3px solid transparent; background:transparent; font-weight:600; color:#64748b; cursor:pointer; font-size:0.85rem;">&#8592; OUTPUT Arguments</button>
+            </div>
+
+            <!-- Variable Rows -->
+            <div id="varsPanelBody" style="flex:1; overflow-y:auto; padding:20px;"></div>
+
+            <!-- Footer -->
+            <div style="padding:16px 24px; border-top:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; background:#f8fafc;">
+                <button id="addVarBtn" onclick="addVariable()" style="padding:8px 18px; background:#6366f1; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">+ Add Variable</button>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="closeVariablesPanel()" style="padding:8px 18px; background:#f1f5f9; color:#334155; border:1px solid #e2e8f0; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">Close</button>
+                    <button onclick="saveVariablesAndClose()" style="padding:8px 18px; background:#0f172a; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">&#10003; Save Variables</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Execute Workflow Modal -->
+    <div class="modal-overlay" id="executeWorkflowModal">
+        <div class="modal" style="width:480px;">
+            <div class="modal-header">
+                <h3>Execute Workflow</h3>
+                <button class="close-btn" id="closeExecModalBtn">&times;</button>
+            </div>
+            <form id="executeWorkflowForm">
+                <input type="hidden" id="execWorkflowId">
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Enter parameters required for this workflow.</p>
+                <div id="execFieldsList" style="display:flex; flex-direction:column; gap:12px;">
+                    <!-- Populated dynamically by JS -->
+                </div>
+                <div id="execResultPanel" style="margin-top:16px; padding:12px; background:#f3f4f6; border-radius:8px; font-size:0.8rem; display:none; max-height:200px; overflow-y:auto;">
+                    <strong>Execution Log:</strong>
+                    <pre id="execResultLog" style="white-space:pre-wrap; font-family:monospace; margin-top:6px;"></pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelExecModalBtn">Close</button>
+                    <button type="submit" class="btn-primary" id="startExecBtn">Run Flow</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Connection Accounts Modal -->
+    <div class="modal-overlay" id="connectionAccountsModal" style="z-index:99999;">
+        <div class="modal" style="width: 580px; max-width: 90vw; background: white; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; padding: 0; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);">
+            <div style="padding: 20px 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 id="connModalTitle" style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #0f172a;">Manage Connected Accounts</h3>
+                    <p style="margin: 4px 0 0 0; font-size: 0.75rem; color: #64748b;">Configure separate authenticated accounts.</p>
+                </div>
+                <button onclick="closeConnectionAccountsModal()" style="background: none; border: none; font-size: 1.4rem; color: #94a3b8; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <!-- Section 1: Connection Form (Add/Edit) -->
+                <div id="connAccountFormContainer" style="display: none; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+                    <h4 id="connFormTitle" style="margin: 0 0 12px 0; font-size: 0.9rem; font-weight: 600; color: #1e293b;">+ Add Account</h4>
+                    <input type="hidden" id="connFormAccountId">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; display: block;">Connection Name</label>
+                            <input type="text" id="connFormAccountName" placeholder="e.g. My Personal Gmail" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;">
+                        </div>
+                        <div id="connDynamicFields" style="display: flex; flex-direction: column; gap: 12px;">
+                            <!-- App specific fields will be injected here -->
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 4px; align-items: center; justify-content: flex-end;">
+                            <span id="connTestStatus" style="font-size: 0.75rem; font-weight: 600; display: none;"></span>
+                            <button type="button" class="btn-cancel" onclick="testConnAccount()" style="padding: 6px 14px; font-size: 0.8rem; border: 1px solid #6366f1; color: #6366f1; background: none; font-weight:600;">Test Connection</button>
+                            <button type="button" class="btn-cancel" onclick="hideConnAccountForm()" style="padding: 6px 14px; font-size: 0.8rem; font-weight:600;">Cancel</button>
+                            <button type="button" class="btn-primary" onclick="saveConnAccount()" style="padding: 6px 14px; font-size: 0.8rem; background: #6366f1; font-weight:600;">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: List of Existing Accounts -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 style="margin: 0; font-size: 0.9rem; font-weight: 600; color: #1e293b;">Connected Accounts</h4>
+                        <button class="btn-primary" onclick="showAddConnAccountForm()" style="padding: 6px 12px; font-size: 0.8rem; background: #10b981;">+ Add Account</button>
+                    </div>
+                    <div id="connAccountsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+                        <!-- JS injected list items -->
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
+                <button class="btn-cancel" onclick="closeConnectionAccountsModal()" style="padding: 8px 16px; font-size: 0.85rem;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/project.js"></script>
+<div id="autocompleteDropdown" style="display:none; position:absolute; z-index:9999; background:white; border:1px solid var(--border-color); border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.12); max-height:250px; overflow-y:auto; min-width:200px; padding:4px 0;"></div>
+</body>
+</html>
+

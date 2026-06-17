@@ -5,46 +5,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ai Anveshana Platform - Login</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background: var(--bg-primary); font-family: 'Poppins', sans-serif; }
+        .split-layout {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+        .split-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+            position: relative;
+            z-index: 10;
+        }
+        .split-right {
+            flex: 1.2;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        /* Removed Mesh Gradient to allow Activepieces background to shine through clearly */
+        
+        /* Floating Workflow Nodes Animation to mimic Activepieces/Automation vibe */
+        .mock-workflow {
+            position: relative;
+            z-index: 2;
+            width: 80%;
+            height: 60%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+        .mock-node {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 24px;
+            border-radius: 16px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 300px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .mock-node:nth-child(1) { animation-delay: 0.2s; }
+        .mock-node:nth-child(2) { animation-delay: 0.4s; }
+        .mock-node:nth-child(3) { animation-delay: 0.6s; }
+        .mock-node:nth-child(4) { animation-delay: 0.8s; }
+        
+        .mock-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1.2rem;
+        }
+        .mock-text h4 { margin: 0; font-size: 1rem; font-weight: 600; }
+        .mock-text p { margin: 4px 0 0; font-size: 0.75rem; color: rgba(255,255,255,0.6); font-family: 'Open Sans', sans-serif; }
+        
+        /* Connecting Lines */
+        .mock-line {
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .mock-line-1 { top: 76px; animation-delay: 0.5s; }
+        .mock-line-2 { top: 188px; animation-delay: 0.7s; }
+        .mock-line-3 { top: 300px; animation-delay: 0.9s; }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .auth-card {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0 40px;
+            width: 100%;
+            max-width: 440px;
+        }
+        .form-group input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .form-group input:focus {
+            background: var(--bg-primary);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        @media (max-width: 900px) {
+            .split-right { display: none; }
+        }
+    </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-logo">
-                <svg viewBox="0 0 100 100" class="logo-img" style="height: 40px; width: 40px;"><rect x="0" y="35" width="100" height="30" rx="15" class="logo-rect" transform="rotate(45 50 50)" /><circle cx="22" cy="78" r="20" class="logo-circle" /><circle cx="78" cy="22" r="20" class="logo-circle" /></svg>
-                <span class="logo-text" style="font-weight:700; margin-left:8px; font-size:1.65rem;">Ai <span class="highlight">Anveshana</span></span>
-            </div>
-            <div class="auth-header">
-                <h2>Welcome Back</h2>
-                <p>Login to manage your AI agents</p>
-            </div>
-            
-            <div class="error-message" id="errorMsg">Invalid username or password</div>
-            
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" required placeholder="admin" autofocus>
+    <div class="split-layout">
+        <div class="split-left">
+            <div class="w-full max-w-sm px-6">
+                <!-- Logo -->
+                <div class="flex items-center justify-start mb-12">
+                    <svg viewBox="0 0 100 100" class="h-10 w-10 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0" y="35" width="100" height="30" rx="15" fill="#10b981" transform="rotate(45 50 50)" />
+                        <circle cx="22" cy="78" r="20" fill="#047857" />
+                        <circle cx="78" cy="22" r="20" fill="#047857" />
+                    </svg>
+                    <span class="font-extrabold ml-3 text-2xl text-gray-900 tracking-tight" style="font-family: 'Poppins', sans-serif;">Ai <span class="text-emerald-500">Anveshana</span></span>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" required placeholder="••••••••">
+                
+                <!-- Header -->
+                <div class="text-left mb-8">
+                    <h1 class="text-[32px] font-bold tracking-tight text-gray-900 mb-2 leading-tight" style="font-family: 'Sentient', serif;">Welcome Back</h1>
+                    <p class="text-gray-500 text-sm">Sign in to continue building AI workflows.</p>
                 </div>
-                <button type="submit" class="auth-btn">Sign In</button>
-            </form>
-            
-            <div class="auth-footer">
-                Don't have an account? <a href="/signup">Sign up</a>
+                
+                <!-- Error Message -->
+                <div class="error-message hidden bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-100 mb-6 font-medium" id="errorMsg">Invalid username or password</div>
+                
+                <!-- Form -->
+                <form id="loginForm" class="space-y-5">
+                    <div class="space-y-1.5">
+                        <label for="username" class="block text-sm font-semibold text-gray-700">Username</label>
+                        <input type="text" id="username" required placeholder="testuser" autofocus class="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none placeholder-gray-400 shadow-sm">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label for="password" class="block text-sm font-semibold text-gray-700">Password</label>
+                        <input type="password" id="password" required placeholder="••••••••" class="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none placeholder-gray-400 shadow-sm">
+                    </div>
+                    <button type="submit" class="w-full py-3.5 px-4 mt-2 rounded-xl text-white font-semibold text-base bg-emerald-500 hover:bg-emerald-600 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-md shadow-emerald-500/20">Sign In</button>
+                </form>
+                
+                <!-- Footer -->
+                <div class="text-left mt-8 text-sm text-gray-500">
+                    Don't have an account? <a href="/signup" class="font-semibold text-emerald-600 hover:text-emerald-500 transition-colors">Sign up</a>
+                </div>
             </div>
+        </div>
+        
+        <div class="split-right" style="background: none;">
+            <div class="auth-anim-scale-wrapper relative overflow-hidden w-full h-full"><div class="auth-anim-canvas relative overflow-hidden origin-top-left group bg-cover bg-center bg-no-repeat" style="height: 100%; background-image: url(&quot;https://cdn.activepieces.com/assets/auth-anim-bg.webp&quot;);"><div class="absolute top-5 left-5 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"><button class="relative w-7 h-7 rounded-full bg-white/15 backdrop-blur-sm hover:scale-105 transition-all duration-200 flex items-center justify-center"><svg class="absolute inset-0 -rotate-90" viewBox="0 0 28 28"><circle cx="14" cy="14" r="13" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="2"></circle><circle cx="14" cy="14" r="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="81.68140899333463" stroke-dashoffset="44.92477494633405" style="transition: stroke-dashoffset 100ms linear;"></circle></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="1em" height="1em" fill="currentColor" class="w-3.5 h-3.5 text-gray-700"><path d="M216,48V208a16,16,0,0,1-16,16H160a16,16,0,0,1-16-16V48a16,16,0,0,1,16-16h40A16,16,0,0,1,216,48ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Z"></path></svg></button></div><div class="auth-anim-agent absolute z-30" style="top: 76.6px; left: 294px; width: 160px; height: 52px;"><div class="auth-anim-gradient-border rounded-xl h-full p-[2px] relative"><div class="bg-white rounded-[10px] overflow-hidden h-full" style="transition: opacity 300ms 200ms, visibility 300ms; opacity: 1; visibility: visible;"><div class="px-3 py-2.5 flex items-center gap-2.5"><div class="flex-shrink-0 rounded-lg flex items-center justify-center bg-gradient-to-br from-violet-100 to-fuchsia-100 transition-all duration-500 w-8 h-8"><span class="transition-all duration-300 text-xs">🤖</span></div><div class="flex-1 min-w-0"><div class="font-medium text-gray-900 truncate leading-tight text-sm">2. Qualify Lead</div><div class="text-gray-500 truncate leading-tight text-xs">AI Agent</div></div></div><div class="transition-all duration-500 ease-out overflow-hidden border-t border-gray-100" style="max-height: 0px; opacity: 0;"><div class="p-4 space-y-3"><div><label class="text-xs font-bold text-gray-400 uppercase mb-1.5 block">Instructions</label><div class="p-3 rounded-lg bg-gray-100 border border-gray-200 min-h-[60px] space-y-2"><div class="h-3 bg-gray-200 rounded w-full"></div><div class="h-3 bg-gray-200 rounded w-4/5"></div><div class="h-3 bg-gray-200 rounded w-3/5"></div></div></div><div class="grid grid-cols-2 gap-2"><div class="p-3 rounded-lg bg-gray-50 border border-gray-100"><p class="text-xs font-bold text-gray-400 uppercase mb-2">Trigger</p><div class="flex items-center gap-2.5"><div class="w-7 h-7 rounded-md bg-gray-200 flex-shrink-0"></div><div class="h-3 bg-gray-200 rounded w-16"></div></div></div><div class="p-3 rounded-lg bg-gray-50 border border-gray-100"><p class="text-xs font-bold uppercase mb-2 text-gray-400">Tools</p><div class="flex items-center gap-1"><div class="w-7 h-7 rounded-md bg-gray-200 flex-shrink-0"></div><div class="w-7 h-7 rounded-md bg-gray-200 flex-shrink-0"></div><div class="w-7 h-7 rounded-md bg-violet-200 border-2 border-violet-400 flex items-center justify-center flex-shrink-0"><span class="text-xs font-bold text-violet-600">+</span></div></div></div></div></div></div></div><div class="absolute inset-[2px] rounded-[10px] bg-gradient-to-br from-violet-100 to-fuchsia-100 flex items-center justify-center text-sm" style="transition: opacity 300ms, visibility 300ms; opacity: 0; visibility: hidden;">🤖</div></div></div><div style="display: none;"><div class="absolute inset-0 flex items-center justify-center p-8"><div class="w-[340px] h-[320px]"></div></div></div><div class="absolute inset-0 flex items-center justify-center p-6 z-40" style="transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; pointer-events: none;"><div class="flex items-start"><div class="w-[340px] h-[320px] relative mt-12"></div><div class="w-64 -ml-16 relative z-50"><div class="px-4 py-3 border border-gray-200 border-b-0 rounded-t-xl bg-white"><p class="font-semibold text-gray-900 text-sm">Add Tools</p></div><div class="p-3 border-x border-gray-200 bg-white relative"><div class="grid grid-cols-4 gap-2"><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="Salesforce" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/salesforce.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">Salesforce</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="ServiceNow" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/service-now.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">ServiceNow</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="SAP Ariba" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/sap-ariba.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">SAP Ariba</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="NetSuite" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/netsuite.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">NetSuite</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="Microsoft Teams" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/microsoft-teams.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">Microsoft Teams</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="Slack" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/slack.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">Slack</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="HubSpot" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/hubspot.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">HubSpot</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="Zendesk" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/zendesk.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">Zendesk</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="Jira Cloud" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/jira.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">Jira Cloud</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="Snowflake" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/snowflake.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">Snowflake</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="Dynamics CRM" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/microsoft-dynamics-crm.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">Dynamics CRM</span></div><div class="group/icon relative w-12 h-12 rounded-lg bg-white border border-gray-200 p-2 hover:border-violet-400 hover:scale-105 hover:bg-violet-50 transition-all duration-150 cursor-pointer flex items-center justify-center hover:z-[100]"><img alt="Intercom" class="w-7 h-7 object-contain pointer-events-none" src="https://cdn.activepieces.com/pieces/intercom.png"><span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 invisible group-hover/icon:opacity-100 group-hover/icon:visible transition-all duration-150 z-[200]">Intercom</span></div></div></div><div class="px-4 py-3 bg-gray-50 border border-gray-200 border-t-gray-100 rounded-b-xl flex items-center justify-between"><p class="text-gray-900 font-semibold">685+ apps</p><span class="text-xs text-violet-600 font-medium">Browse all →</span></div></div></div></div><div class="absolute inset-0 flex items-center justify-center" style="transition: opacity 500ms; opacity: 1; pointer-events: auto; padding-top: 60px;"><div class="relative" style="width: 390px; height: 400px;"><svg class="absolute inset-0 pointer-events-none" width="390" height="400"><path d="M 195 52 L 195 87" stroke="#9ca3af" stroke-width="2" fill="none" stroke-linecap="round"></path><path d="M 195 139 L 195 174" stroke="#9ca3af" stroke-width="2" fill="none" stroke-linecap="round"></path><path d="M 195 226 L 195 241 Q 195 253, 183 253 L 92 253 Q 80 253, 80 265" stroke="#9ca3af" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M 195 226 L 195 241 Q 195 253, 207 253 L 298 253 Q 310 253, 310 265" stroke="#9ca3af" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M 80 317 L 80 347" stroke="#9ca3af" stroke-width="2" fill="none" stroke-linecap="round"></path><path d="M 310 317 L 310 347" stroke="#9ca3af" stroke-width="2" fill="none" stroke-linecap="round"></path></svg><div class="absolute" style="left: 115px; top: 0px; width: 160px;"><div class="absolute -top-5 left-0 text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-200 z-10">⚡ Trigger</div><div class="rounded-xl border bg-white px-3 py-2.5 border-gray-200"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-pink-50"><img class="w-[19px] h-[19px]" alt="" src="https://cdn.activepieces.com/pieces/hubspot.png"></div><div class="flex-1 min-w-0"><div class="font-medium text-gray-900 text-sm truncate leading-tight">1. New Lead</div><div class="text-gray-500 text-xs truncate leading-tight">HubSpot</div></div></div></div></div><div class="absolute" style="left: 115px; top: 87px; width: 160px; height: 52px;"></div><div class="absolute" style="left: 115px; top: 174px; width: 160px;"><div class="rounded-xl border bg-white px-3 py-2.5 border-amber-200"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-amber-50"><svg class="w-[19px] h-[19px] text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><div class="flex-1 min-w-0"><div class="font-medium text-gray-900 text-sm truncate leading-tight">3. Qualified?</div><div class="text-gray-500 text-xs truncate leading-tight">Condition</div></div></div></div></div><div class="absolute" style="left: 0px; top: 265px; width: 160px;"><div class="rounded-xl border bg-white px-3 py-2.5 border-gray-200"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-50"><img class="w-[19px] h-[19px]" alt="" src="https://cdn.activepieces.com/pieces/salesforce.png"></div><div class="flex-1 min-w-0"><div class="font-medium text-gray-900 text-sm truncate leading-tight">4. Add to CRM</div><div class="text-gray-500 text-xs truncate leading-tight">Salesforce</div></div></div></div></div><div class="absolute" style="left: 0px; top: 347px; width: 160px;"><div class="rounded-xl border bg-white px-3 py-2.5 border-gray-200"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-purple-50"><img class="w-[19px] h-[19px]" alt="" src="https://cdn.activepieces.com/pieces/slack.png"></div><div class="flex-1 min-w-0"><div class="font-medium text-gray-900 text-sm truncate leading-tight">5. Notify Sales</div><div class="text-gray-500 text-xs truncate leading-tight">Slack</div></div></div></div></div><div class="absolute" style="left: 230px; top: 265px; width: 160px;"><div class="rounded-xl border bg-white px-3 py-2.5 border-pink-200"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-pink-50"><svg class="w-[19px] h-[19px] text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></div><div class="flex-1 min-w-0"><div class="font-medium text-gray-900 text-sm truncate leading-tight">6. Nurture Loop</div><div class="text-gray-500 text-xs truncate leading-tight">Loop</div></div></div></div></div><div class="absolute" style="left: 230px; top: 347px; width: 160px;"><div class="rounded-xl border bg-white px-3 py-2.5 border-gray-200"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-cyan-50"><img class="w-[19px] h-[19px]" alt="" src="https://cdn.activepieces.com/pieces/gmail.png"></div><div class="flex-1 min-w-0"><div class="font-medium text-gray-900 text-sm truncate leading-tight">7. Send Email</div><div class="text-gray-500 text-xs truncate leading-tight">Gmail</div></div></div></div></div></div></div><div class="absolute inset-0 flex items-center justify-center p-8" style="transition: opacity 500ms; opacity: 0; pointer-events: none;"><div class="w-full max-w-sm"><div class="bg-white rounded-lg overflow-hidden border border-gray-200"><div class="px-3 py-2 bg-[#4A154B] flex items-center gap-2"><svg class="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"></path></svg><span class="text-white/90 text-sm">#sales</span></div><div class="p-4"><div class="flex gap-3"><div class="w-8 h-8 flex-shrink-0 mt-0.5"></div><div class="flex-1 min-w-0"><div class="flex items-baseline gap-2 mb-1"><span class="font-bold text-gray-900 text-sm">Lead Qualifier</span><span class="text-gray-400 text-xs">11:42 AM</span></div><div class="space-y-2 text-sm text-gray-800 leading-relaxed"><p>Hey! <strong>Sarah Chen</strong> from TechCorp just signed up.</p><p class="text-gray-600">She's VP of Engineering and matches our ICP. Should I send the intro sequence?</p></div><div class="flex gap-2 mt-3"><button class="px-4 py-1.5 bg-[#007a5a] hover:bg-[#148567] text-white text-sm font-medium rounded transition-colors">Send intro</button><button class="px-4 py-1.5 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded border border-gray-300 transition-colors">Skip</button></div></div></div></div></div></div></div><div class="absolute inset-0 flex flex-col items-center justify-end" style="transition: opacity 500ms; opacity: 0; pointer-events: none;"><div class="relative flex-shrink-0 mt-32"><div class="w-[200px] h-[60px]"></div></div><div class="relative w-[30px] h-[60px] flex-shrink-0 z-0"><svg class="w-full h-full" preserveAspectRatio="none"><line x1="10" y1="0" x2="10" y2="100%" stroke="#10b981" stroke-width="2" stroke-opacity="0.2" stroke-linecap="round"></line><line x1="20" y1="100%" x2="20" y2="0" stroke="#8b5cf6" stroke-width="2" stroke-opacity="0.2" stroke-linecap="round"></line></svg><div class="absolute inset-0 pointer-events-none"><span class="auth-anim-particle-dot-vertical bg-emerald-500" style="left: 8px; animation-delay: 0s;"></span><span class="auth-anim-particle-dot-vertical bg-emerald-500" style="left: 8px; animation-delay: 0.5s;"></span><span class="auth-anim-particle-dot-vertical bg-emerald-500" style="left: 8px; animation-delay: 1s;"></span><span class="auth-anim-particle-dot-vertical bg-emerald-500" style="left: 8px; animation-delay: 1.5s;"></span><span class="auth-anim-particle-dot-vertical-reverse bg-violet-500" style="left: 18px; animation-delay: 0s;"></span><span class="auth-anim-particle-dot-vertical-reverse bg-violet-500" style="left: 18px; animation-delay: 0.5s;"></span><span class="auth-anim-particle-dot-vertical-reverse bg-violet-500" style="left: 18px; animation-delay: 1s;"></span><span class="auth-anim-particle-dot-vertical-reverse bg-violet-500" style="left: 18px; animation-delay: 1.5s;"></span></div></div><div class="bg-white border border-gray-200 border-b-0 rounded-t-xl flex flex-col overflow-hidden w-[90%] z-10"><div class="px-4 py-2.5 bg-white border-b border-gray-200 flex items-center gap-3"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded-md bg-violet-100 flex items-center justify-center"><svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18M10 3v18M14 3v18"></path></svg></div><span class="font-semibold text-gray-900 text-sm">Lead Scores</span></div><div class="flex-1"></div><div class="flex items-center gap-1.5 text-xs text-gray-500"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>Synced</span></div></div><div class="flex-1 overflow-auto"><table class="w-full border-collapse text-sm"><thead class="sticky top-0 z-10"><tr class="bg-gray-50"><th class="w-10 px-3 py-2 text-center text-xs font-medium text-gray-400 border-b border-r border-gray-200 bg-gray-50"></th><th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 border-b border-r border-gray-200 bg-gray-50">Name</th><th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 border-b border-r border-gray-200 bg-gray-50">Company</th><th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 border-b border-r border-gray-200 bg-gray-50">Score</th><th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 border-b border-gray-200 bg-gray-50">Status</th></tr></thead><tbody><tr class="group hover:bg-blue-50/50"><td class="px-3 py-2.5 text-center text-xs text-gray-400 border-r border-gray-100 bg-gray-50/50 border-b">1</td><td class="px-4 py-2.5 text-gray-900 border-r border-gray-100 whitespace-nowrap border-b">Sarah Chen</td><td class="px-4 py-2.5 text-gray-600 border-r border-gray-100 border-b">Stripe</td><td class="px-4 py-2.5 border-r border-gray-100 border-b"><span class="inline-flex items-center justify-center w-8 h-6 rounded text-xs font-semibold bg-emerald-100 text-emerald-700">92</span></td><td class="px-4 py-2.5 border-gray-100 border-b"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700"><span class="w-1.5 h-1.5 rounded-full inline-block bg-emerald-500"></span>Qualified</span></td></tr><tr class="group hover:bg-blue-50/50"><td class="px-3 py-2.5 text-center text-xs text-gray-400 border-r border-gray-100 bg-gray-50/50 border-b">2</td><td class="px-4 py-2.5 text-gray-900 border-r border-gray-100 whitespace-nowrap border-b">Mike Johnson</td><td class="px-4 py-2.5 text-gray-600 border-r border-gray-100 border-b">Shopify</td><td class="px-4 py-2.5 border-r border-gray-100 border-b"><span class="inline-flex items-center justify-center w-8 h-6 rounded text-xs font-semibold bg-amber-100 text-amber-700">68</span></td><td class="px-4 py-2.5 border-gray-100 border-b"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700"><span class="w-1.5 h-1.5 rounded-full inline-block bg-amber-500"></span>Nurturing</span></td></tr><tr class="group hover:bg-blue-50/50"><td class="px-3 py-2.5 text-center text-xs text-gray-400 border-r border-gray-100 bg-gray-50/50 border-b">3</td><td class="px-4 py-2.5 text-gray-900 border-r border-gray-100 whitespace-nowrap border-b">Lisa Park</td><td class="px-4 py-2.5 text-gray-600 border-r border-gray-100 border-b">Figma</td><td class="px-4 py-2.5 border-r border-gray-100 border-b"><span class="inline-flex items-center justify-center w-8 h-6 rounded text-xs font-semibold bg-gray-100 text-gray-600">34</span></td><td class="px-4 py-2.5 border-gray-100 border-b"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500"><span class="w-1.5 h-1.5 rounded-full inline-block bg-gray-400"></span>New</span></td></tr><tr class="group hover:bg-blue-50/50"><td class="px-3 py-2.5 text-center text-xs text-gray-400 border-r border-gray-100 bg-gray-50/50 border-b">4</td><td class="px-4 py-2.5 text-gray-900 border-r border-gray-100 whitespace-nowrap border-b">Alex Rivera</td><td class="px-4 py-2.5 text-gray-600 border-r border-gray-100 border-b">Notion</td><td class="px-4 py-2.5 border-r border-gray-100 border-b"><span class="inline-flex items-center justify-center w-8 h-6 rounded text-xs font-semibold bg-emerald-100 text-emerald-700">85</span></td><td class="px-4 py-2.5 border-gray-100 border-b"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700"><span class="w-1.5 h-1.5 rounded-full inline-block bg-emerald-500"></span>Qualified</span></td></tr><tr class="group hover:bg-blue-50/50"><td class="px-3 py-2.5 text-center text-xs text-gray-400 border-r border-gray-100 bg-gray-50/50 border-b">5</td><td class="px-4 py-2.5 text-gray-900 border-r border-gray-100 whitespace-nowrap border-b">Jordan Lee</td><td class="px-4 py-2.5 text-gray-600 border-r border-gray-100 border-b">Vercel</td><td class="px-4 py-2.5 border-r border-gray-100 border-b"><span class="inline-flex items-center justify-center w-8 h-6 rounded text-xs font-semibold bg-amber-100 text-amber-700">52</span></td><td class="px-4 py-2.5 border-gray-100 border-b"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700"><span class="w-1.5 h-1.5 rounded-full inline-block bg-amber-500"></span>Nurturing</span></td></tr><tr class="group hover:bg-blue-50/50"><td class="px-3 py-2.5 text-center text-xs text-gray-400 border-r border-gray-100 bg-gray-50/50">6</td><td class="px-4 py-2.5 text-gray-900 border-r border-gray-100 whitespace-nowrap">Emma Wilson</td><td class="px-4 py-2.5 text-gray-600 border-r border-gray-100">Linear</td><td class="px-4 py-2.5 border-r border-gray-100"><span class="inline-flex items-center justify-center w-8 h-6 rounded text-xs font-semibold bg-emerald-100 text-emerald-700">78</span></td><td class="px-4 py-2.5 border-gray-100"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700"><span class="w-1.5 h-1.5 rounded-full inline-block bg-emerald-500"></span>Qualified</span></td></tr></tbody></table></div></div></div></div></div></div>
         </div>
     </div>
 
     <script>
-        // Redirect if already logged in
-        if (localStorage.getItem('token')) {
-            window.location.href = '/';
+        // Redirect if already logged in with a valid (non-expired) token
+        const existingToken = localStorage.getItem('token');
+        if (existingToken) {
+            // Verify it's not expired by checking the payload
+            try {
+                const payload = JSON.parse(atob(existingToken.split('.')[1]));
+                if (payload.exp && payload.exp * 1000 > Date.now()) {
+                    // Token is still valid, redirect
+                    const dest = localStorage.getItem('redirect_after_login') || '/';
+                    localStorage.removeItem('redirect_after_login');
+                    window.location.href = dest;
+                } else {
+                    // Token expired — clear it and stay on login page
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                }
+            } catch(e) {
+                // Malformed token — clear it
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+            }
         }
 
         const loginForm = document.getElementById('loginForm');
@@ -70,13 +219,103 @@
                 }
                 
                 const data = await res.json();
+                // Always clear stale user data before storing fresh credentials
+                localStorage.removeItem('username');
                 localStorage.setItem('token', data.access_token);
-                localStorage.setItem('username', username);
-                window.location.href = '/';
+                // Use canonical username from API response, not form input (prevents case mismatches)
+                localStorage.setItem('username', data.username || username);
+                if (data.ap_token) {
+                    localStorage.setItem('ap_token', data.ap_token);
+                }
+                if (data.ap_projectId) {
+                    localStorage.setItem('ap_projectId', data.ap_projectId);
+                }
+                // Redirect back to where they were, or dashboard
+                const dest = localStorage.getItem('redirect_after_login') || '/';
+                localStorage.removeItem('redirect_after_login');
+                window.location.href = dest;
             } catch (err) {
                 errorMsg.textContent = err.message;
                 errorMsg.style.display = 'block';
             }
+        });
+    </script>
+    <script>
+        // Activepieces UI Animation Orchestrator
+        document.addEventListener('DOMContentLoaded', () => {
+            const wrapper = document.querySelector('.auth-anim-scale-wrapper');
+            if(wrapper) wrapper.style.transition = 'transform 1s ease-in-out';
+
+            const p6 = document.querySelector('.absolute.p-6.z-40'); // Add Tools modal
+            const p8s = document.querySelectorAll('.absolute.p-8');
+            const p8 = p8s[p8s.length - 1]; // Slack Message modal
+            const flexCol = document.querySelector('.absolute.flex-col.justify-end'); // Lead Scores table
+            const nodeTree = document.querySelector('.absolute[style*="padding-top: 60px"]'); // Background Node Tree
+            const agentDropdown = document.querySelector('.auth-anim-agent .transition-all.ease-out'); // Agent Dropdown
+            
+            const sequence = [
+                () => { // Start: Show Tree, Open Dropdown
+                    if (nodeTree) nodeTree.style.opacity = '1';
+                    if (p6) p6.style.opacity = '0';
+                    if (p8) p8.style.opacity = '0';
+                    if (flexCol) flexCol.style.opacity = '0';
+                    if (wrapper) wrapper.style.transform = 'scale(1)';
+                    if (agentDropdown) {
+                        agentDropdown.style.maxHeight = '300px';
+                        agentDropdown.style.opacity = '1';
+                    }
+                },
+                () => { // Close Dropdown, Hide Tree
+                    if (agentDropdown) {
+                        agentDropdown.style.maxHeight = '0px';
+                        agentDropdown.style.opacity = '0';
+                    }
+                    if (nodeTree) nodeTree.style.opacity = '0';
+                    if (wrapper) wrapper.style.transform = 'scale(1.05)';
+                },
+                () => { // Show Add Tools
+                    if (p6) p6.style.opacity = '1';
+                },
+                () => { // Hide Add Tools
+                    if (p6) p6.style.opacity = '0';
+                    if (wrapper) wrapper.style.transform = 'scale(1)';
+                },
+                () => { // Show Tree again
+                    if (nodeTree) nodeTree.style.opacity = '1';
+                },
+                () => { // Hide Tree
+                    if (nodeTree) nodeTree.style.opacity = '0';
+                    if (wrapper) wrapper.style.transform = 'scale(1.05)';
+                },
+                () => { // Show Slack Message
+                    if (p8) p8.style.opacity = '1';
+                },
+                () => { // Hide Slack
+                    if (p8) p8.style.opacity = '0';
+                    if (wrapper) wrapper.style.transform = 'scale(1)';
+                },
+                () => { // Show Tree
+                    if (nodeTree) nodeTree.style.opacity = '1';
+                },
+                () => { // Hide Tree
+                    if (nodeTree) nodeTree.style.opacity = '0';
+                    if (wrapper) wrapper.style.transform = 'scale(1.05)';
+                },
+                () => { // Show Lead Scores
+                    if (flexCol) flexCol.style.opacity = '1';
+                },
+                () => { // Hide Lead Scores
+                    if (flexCol) flexCol.style.opacity = '0';
+                }
+            ];
+
+            let step = 0;
+            setInterval(() => {
+                if(sequence[step]) sequence[step]();
+                step = (step + 1) % sequence.length;
+            }, 1800);
+            
+            if(sequence[0]) sequence[0](); // Kickoff
         });
     </script>
 </body>

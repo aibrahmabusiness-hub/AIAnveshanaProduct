@@ -186,6 +186,8 @@ API_TOOL_SCHEMAS = {
 
 def get_api_tools(connected_tools):
     import tools.tool_registry as tr
+    from database import current_connection_id
+    import functools
     
     mapping = {
         "outlook_calendar": ["tool_schedule_meeting"],
@@ -203,7 +205,24 @@ def get_api_tools(connected_tools):
     schemas = []
     callables = {}
     
-    for tid in connected_tools:
+    def with_connection(func, connection_id):
+        if not connection_id:
+            return func
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            token = current_connection_id.set(connection_id)
+            try:
+                return func(*args, **kwargs)
+            finally:
+                current_connection_id.reset(token)
+        return wrapper
+    
+    for tool_str in connected_tools:
+        tid = tool_str
+        conn_id = None
+        if ":" in tool_str:
+            tid, conn_id = tool_str.split(":", 1)
+            
         if tid in mapping:
             for fname in mapping[tid]:
                 if fname in API_TOOL_SCHEMAS:
@@ -211,34 +230,9 @@ def get_api_tools(connected_tools):
                         "type": "function",
                         "function": API_TOOL_SCHEMAS[fname]
                     })
-                    if fname == "tool_schedule_meeting":
-                        callables[fname] = tr.tool_schedule_meeting
-                    elif fname == "tool_read_emails":
-                        callables[fname] = tr.tool_read_emails
-                    elif fname == "tool_read_gmail":
-                        callables[fname] = tr.tool_read_gmail
-                    elif fname == "tool_send_gmail":
-                        callables[fname] = tr.tool_send_gmail
-                    elif fname == "tool_query_salesforce":
-                        callables[fname] = tr.tool_query_salesforce
-                    elif fname == "tool_create_salesforce_record":
-                        callables[fname] = tr.tool_create_salesforce_record
-                    elif fname == "tool_servicenow_create_incident":
-                        callables[fname] = tr.tool_servicenow_create_incident
-                    elif fname == "tool_servicenow_get_incidents":
-                        callables[fname] = tr.tool_servicenow_get_incidents
-                    elif fname == "tool_servicenow_update_incident":
-                        callables[fname] = tr.tool_servicenow_update_incident
-                    elif fname == "tool_servicenow_query_table":
-                        callables[fname] = tr.tool_servicenow_query_table
-                    elif fname == "tool_jira_create_issue":
-                        callables[fname] = tr.tool_jira_create_issue
-                    elif fname == "tool_jira_get_issues":
-                        callables[fname] = tr.tool_jira_get_issues
-                    elif fname == "tool_jira_add_comment":
-                        callables[fname] = tr.tool_jira_add_comment
-                    elif fname == "tool_google_search":
-                        callables[fname] = tr.tool_google_search
+                    base_func = getattr(tr, fname, None)
+                    if base_func:
+                        callables[fname] = with_connection(base_func, conn_id)
                         
     return schemas, callables
 
@@ -515,7 +509,7 @@ def run_agent_for_project(user_id: int, agent_id: int, thread_id: int, prompt: s
                     payload["tools"] = schemas
                     payload["tool_choice"] = "auto"
                     
-                res = requests.post("https://api.mistral.ai/v1/chat/completions", headers=headers, json=payload, timeout=30)
+                res = requests.post("https://api.mistral.ai/v1/chat/completions", headers=headers, json=payload, timeout=120)
                 if res.status_code != 200:
                     raise Exception(f"Mistral API returned status {res.status_code}: {res.text}")
                 
@@ -603,7 +597,8 @@ def run_agent_for_project(user_id: int, agent_id: int, thread_id: int, prompt: s
             reply_text = check_output_guardrails(reply_text, g_types)
 
         # 8. Save messages to chat history
-        add_chat_message(user_id, thread_id, "assistant", reply_text)
+        if thread_id:
+            add_chat_message(user_id, thread_id, "assistant", reply_text)
 
         return reply_text
 

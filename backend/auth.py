@@ -6,7 +6,7 @@ from fastapi import Header, HTTPException, status
 
 SECRET_KEY = os.getenv("AUTH_SECRET_KEY", "anveshana_jwt_secret_key_2026_default")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
 def hash_password(password: str) -> str:
     """Hash a password using bcrypt."""
